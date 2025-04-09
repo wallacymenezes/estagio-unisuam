@@ -21,11 +21,11 @@ public class User {
     @Email(message = "Invalid email format")
     private String email;
 
-    @NotEmpty(message = "The CPF cannot be empty")
-    @Min(value = 8, message = "The CPF must be 8 digits")
+    @NotEmpty(message = "The password cannot be empty")
+    @Size(min = 8, message = "The password must be at least 8 characters")
     private String password;
 
-    @Max(value = 5000, message = "The Photo must be less than 5000 characters")
+    @Size(max = 5000, message = "The photo must be less than 5000 characters")
     private String photo;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.REMOVE)
@@ -53,35 +53,35 @@ public class User {
         this.userId = userId;
     }
 
-    public @NotEmpty(message = "The name cannot be empty") @Size(min = 3, max = 50, message = "The name must be between 3 and 50 characters") String getName() {
+    public String getName() {
         return name;
     }
 
-    public void setName(@NotEmpty(message = "The name cannot be empty") @Size(min = 3, max = 50, message = "The name must be between 3 and 50 characters") String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public @Email(message = "Invalid email format") String getEmail() {
+    public String getEmail() {
         return email;
     }
 
-    public void setEmail(@Email(message = "Invalid email format") String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    public @NotEmpty(message = "The CPF cannot be empty") @Min(value = 8, message = "The CPF must be 8 digits") String getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(@NotEmpty(message = "The CPF cannot be empty") @Min(value = 8, message = "The CPF must be 8 digits") String password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    public @Max(value = 5000, message = "The Photo must be less than 5000 characters") String getPhoto() {
+    public String getPhoto() {
         return photo;
     }
 
-    public void setPhoto(@Max(value = 5000, message = "The Photo must be less than 5000 characters") String photo) {
+    public void setPhoto(String photo) {
         this.photo = photo;
     }
 
