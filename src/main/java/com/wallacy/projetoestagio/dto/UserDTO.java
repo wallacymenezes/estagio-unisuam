@@ -9,6 +9,7 @@ public class UserDTO {
     private String name;
     private String email;
     private String photo;
+    private String password;
 
     private List<EarningDTO> earnings;
     private List<ExpenseDTO> expenses;
@@ -20,11 +21,12 @@ public class UserDTO {
     public UserDTO() {
     }
 
-    public UserDTO(UUID userId, String name, String email, String photo) {
+    public UserDTO(UUID userId, String name, String email, String photo, String password) {
         this.userId = userId;
         this.name = name;
         this.email = email;
         this.photo = photo;
+        this.password = password;
     }
 
     // Getters e Setters
@@ -91,5 +93,13 @@ public class UserDTO {
 
     public void setObjectives(List<ObjectiveDTO> objectives) {
         this.objectives = objectives;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

@@ -1,4 +1,4 @@
 package com.wallacy.projetoestagio.dto;
 
-public class LoginResponse {
+public record LoginResponse (String accessToken, Long expiresIn){
 }

@@ -1,4 +1,4 @@
 package com.wallacy.projetoestagio.dto;
 
-public class LoginRequest {
+public record LoginRequest (String user, String password){
 }

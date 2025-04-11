@@ -73,6 +73,7 @@ public class UserMapper {
         user.setName(dto.getName());
         user.setEmail(dto.getEmail());
         user.setPhoto(dto.getPhoto());
+        user.setPassword(dto.getPassword());
 
         if (dto.getEarnings() != null) {
             List<Earning> earnings = dto.getEarnings().stream().map(e -> {
