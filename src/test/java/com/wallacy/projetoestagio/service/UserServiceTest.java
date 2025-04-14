@@ -84,9 +84,6 @@ public class UserServiceTest {
         existing.setEmail("velho@email.com");
         existing.setName("Antigo");
 
-        // Inicialize o campo earnings como uma lista vazia, ou com os dados esperados para o seu caso
-        existing.setEarnings(new ArrayList<>()); // ou qualquer outra inicialização que faça sentido
-
         JwtAuthenticationToken token = mock(JwtAuthenticationToken.class);
         when(token.getName()).thenReturn(userId.toString());
 
