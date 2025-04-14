@@ -92,9 +92,9 @@ public class RecoveryService {
 
     public void changePassword(String newPassword, JwtAuthenticationToken accessToken) {
 
-        User user = userRepository.findByUserId(UUID.fromString(accessToken.getName()))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
-
+        if (!accessToken.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token inválido");
+        }
         if (newPassword == null || newPassword.isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Senha não pode ser vazia");
         }
@@ -102,8 +102,11 @@ public class RecoveryService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Senha deve ter no mínimo 8 caracteres");
         }
 
-        if (!accessToken.isAuthenticated()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token inválido");
+        User user = userRepository.findByUserId(UUID.fromString(accessToken.getName()))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
+
+        if (passwordEncoder.matches(newPassword, user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nova senha não pode ser igual à anterior");
         }
 
         user.setPassword(passwordEncoder.encode(newPassword));

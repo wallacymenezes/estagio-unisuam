@@ -4,14 +4,12 @@ import com.wallacy.projetoestagio.dto.LoginRequest;
 import com.wallacy.projetoestagio.dto.LoginResponse;
 import com.wallacy.projetoestagio.model.User;
 import com.wallacy.projetoestagio.repository.UserRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 

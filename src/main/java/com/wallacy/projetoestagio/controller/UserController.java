@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -50,8 +51,8 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<UserDTO> putUser(@Valid @RequestBody UserDTO userDTO) {
-        return userService.updateUser(userDTO)
+    public ResponseEntity<UserDTO> putUser(@Valid @RequestBody UserDTO userDTO, JwtAuthenticationToken accessToken) {
+        return userService.updateUser(userDTO, accessToken)
                 .map(response -> ResponseEntity.status(HttpStatus.OK).body(response))
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }

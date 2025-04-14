@@ -33,7 +33,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/users/register", "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/users/register", "/auth/login", "/auth/recover-token", "/auth/validate-otp").permitAll()
                         .anyRequest().authenticated()
                 )
                 .csrf(csrf -> csrf.disable()) // Desabilita CSRF
