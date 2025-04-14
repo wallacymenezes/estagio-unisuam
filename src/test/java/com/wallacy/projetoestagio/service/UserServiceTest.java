@@ -43,6 +43,8 @@ public class UserServiceTest {
     @Test
     void registerUser_shouldSaveNewUser_whenEmailIsUnique() {
         UserDTO dto = new UserDTO(UUID.randomUUID(), "Teste", "teste@email.com", "senha123", null);
+        dto.setEarnings(new ArrayList<>());
+        dto.setExpenses(new ArrayList<>());
         User userEntity = UserMapper.toEntity(dto);
         userEntity.setPassword("senhaCriptografada");
 

@@ -30,18 +30,18 @@ public class User {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.REMOVE)
     @JsonIgnoreProperties("user")
-    private List<Earning> earnings;
+    private List<Earning> earnings = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.REMOVE)
     @JsonIgnoreProperties("user")
-    private List<Expense> expenses;
+    private List<Expense> expenses = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.REMOVE)
     @JsonIgnoreProperties("user")
-    private List<Investment> investments;
+    private List<Investment> investments = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Objective> objectives;
+    private List<Objective> objectives = new ArrayList<>();
 
     // Getters, setters e construtores
 
