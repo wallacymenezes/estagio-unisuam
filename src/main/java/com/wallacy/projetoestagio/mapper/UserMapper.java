@@ -16,6 +16,7 @@ public class UserMapper {
         dto.setName(user.getName());
         dto.setEmail(user.getEmail());
         dto.setPhoto(user.getPhoto());
+        dto.setRegistrationMethod(user.getRegistrationMethod());
 
         dto.setEarnings(user.getEarnings().stream().map(e -> {
             EarningDTO edto = new EarningDTO();
@@ -74,6 +75,7 @@ public class UserMapper {
         user.setEmail(dto.getEmail());
         user.setPhoto(dto.getPhoto());
         user.setPassword(dto.getPassword());
+        user.setRegistrationMethod(dto.getRegistrationMethod());
 
         if (dto.getEarnings() != null) {
             List<Earning> earnings = dto.getEarnings().stream().map(e -> {

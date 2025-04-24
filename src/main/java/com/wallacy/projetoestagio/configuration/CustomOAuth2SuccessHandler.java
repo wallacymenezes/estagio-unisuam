@@ -32,12 +32,15 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         String email = oAuth2User.getAttribute("email");
         String name = oAuth2User.getAttribute("name");
+        String photo = oAuth2User.getAttribute("photo");
 
         // Cria ou atualiza usuário
         User user = userRepository.findByEmail(email).orElseGet(() -> {
             User novo = new User();
             novo.setEmail(email);
             novo.setName(name);
+            novo.setPhoto(photo);
+            novo.setRegistrationMethod("GOOGLE");
             return userRepository.save(novo);
         });
 
@@ -48,6 +51,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
                 .issuedAt(now)
                 .expiresAt(now.plusSeconds(3600))
                 .subject(user.getName())
+                .claim("userId", user.getUserId())
                 .build();
 
         String token = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();

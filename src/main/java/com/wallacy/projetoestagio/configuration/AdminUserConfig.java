@@ -35,6 +35,7 @@ public class AdminUserConfig implements CommandLineRunner {
                     var user = new User();
                     user.setName("Admin");
                     user.setEmail("timwallacy@gmail.com");
+                    user.setRegistrationMethod("OWN");
                     user.setPassword(passwordEncoder.encode("root@root"));
                     //user.setRoles(Set.of(roleAdmin));
                     userRepository.save(user);

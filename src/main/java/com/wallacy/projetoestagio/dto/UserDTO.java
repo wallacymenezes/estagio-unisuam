@@ -10,6 +10,7 @@ public class UserDTO {
     private String email;
     private String photo;
     private String password;
+    private String registrationMethod;
 
     private List<EarningDTO> earnings;
     private List<ExpenseDTO> expenses;
@@ -21,12 +22,13 @@ public class UserDTO {
     public UserDTO() {
     }
 
-    public UserDTO(UUID userId, String name, String email, String photo, String password) {
+    public UserDTO(UUID userId, String name, String email, String photo, String password, String registrationMethod) {
         this.userId = userId;
         this.name = name;
         this.email = email;
         this.photo = photo;
         this.password = password;
+        this.registrationMethod = registrationMethod;
     }
 
     // Getters e Setters
@@ -61,6 +63,14 @@ public class UserDTO {
 
     public void setPhoto(String photo) {
         this.photo = photo;
+    }
+
+    public String getRegistrationMethod() {
+        return registrationMethod;
+    }
+
+    public void setRegistrationMethod(String registrationMethod) {
+        this.registrationMethod = registrationMethod;
     }
 
     public List<EarningDTO> getEarnings() {

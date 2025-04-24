@@ -28,6 +28,8 @@ public class User {
     @Size(max = 5000, message = "The photo must be less than 5000 characters")
     private String photo;
 
+    private String registrationMethod;
+
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.REMOVE)
     @JsonIgnoreProperties("user")
     private List<Earning> earnings = new ArrayList<>();
@@ -83,6 +85,14 @@ public class User {
 
     public void setPhoto(String photo) {
         this.photo = photo;
+    }
+
+    public String getRegistrationMethod() {
+        return registrationMethod;
+    }
+
+    public void setRegistrationMethod(String registrationMethod) {
+        this.registrationMethod = registrationMethod;
     }
 
     public List<Earning> getEarnings() {
