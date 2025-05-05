@@ -2,9 +2,12 @@ package com.wallacy.projetoestagio.controller;
 
 import com.wallacy.projetoestagio.dto.ExpenseDTO;
 import com.wallacy.projetoestagio.mapper.ExpenseMapper;
+import com.wallacy.projetoestagio.model.Category;
 import com.wallacy.projetoestagio.model.Expense;
+import com.wallacy.projetoestagio.repository.CategoryRepository;
 import com.wallacy.projetoestagio.repository.ExpenseRepository;
 import com.wallacy.projetoestagio.util.TokenUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +22,11 @@ import java.util.stream.Collectors;
 public class ExpenseController {
 
     private final ExpenseRepository expenseRepository;
+    private final CategoryRepository categoryRepository;
 
-    public ExpenseController(ExpenseRepository expenseRepository) {
+    public ExpenseController(ExpenseRepository expenseRepository, CategoryRepository categoryRepository) {
         this.expenseRepository = expenseRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @GetMapping
@@ -45,4 +50,50 @@ public class ExpenseController {
             }
         }).orElseGet(() -> ResponseEntity.status(401).body(null));
     }
+
+    @PostMapping
+    public ResponseEntity<?> create(@RequestBody ExpenseDTO expenseDTO, JwtAuthenticationToken token) {
+        return TokenUtils.getUserFromToken(token).map(user -> {
+            Optional<Category> categoryOpt = categoryRepository.findByName(expenseDTO.getCategory());
+            if (categoryOpt.isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
+            Expense expense = ExpenseMapper.toEntity(expenseDTO, categoryOpt.get());
+            expense.setUser(user);
+            Expense savedExpense = expenseRepository.save(expense);
+            return ResponseEntity.status(HttpStatus.CREATED).body(ExpenseMapper.toDTO(savedExpense));
+        }).orElseGet(() -> ResponseEntity.status(401).body(null));
+    }
+
+    @PutMapping
+    public ResponseEntity<?> update(@RequestBody ExpenseDTO expenseDTO, JwtAuthenticationToken token) {
+        return TokenUtils.getUserFromToken(token).map(user -> {
+            Optional<Expense> existingExpense = expenseRepository.findById(expenseDTO.getId());
+            Optional<Category> categoryOpt = categoryRepository.findByName(expenseDTO.getCategory());
+            if (categoryOpt.isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
+            if (existingExpense.isPresent() && existingExpense.get().getUser().equals(user)) {
+                Expense updatedExpense = ExpenseMapper.updateEntityFromDTO(existingExpense.get(), expenseDTO, categoryOpt.get());
+                Expense savedExpense = expenseRepository.save(updatedExpense);
+                return ResponseEntity.ok(ExpenseMapper.toDTO(savedExpense));
+            } else {
+                return ResponseEntity.status(403).<ExpenseDTO>body(null);
+            }
+        }).orElseGet(() -> ResponseEntity.status(401).body(null));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id, JwtAuthenticationToken token) {
+        return TokenUtils.getUserFromToken(token).map(user ->
+                expenseRepository.findById(id)
+                        .filter(expense -> expense.getUser().equals(user))
+                        .map(expense -> {
+                            expenseRepository.delete(expense);
+                            return ResponseEntity.noContent().build(); // ← return adicionado aqui
+                        })
+                        .orElseGet(() -> ResponseEntity.status(403).build())
+        ).orElseGet(() -> ResponseEntity.status(401).build());
+    }
+
 }

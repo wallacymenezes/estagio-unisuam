@@ -57,10 +57,10 @@ public class EarningController {
         }).orElseGet(() -> ResponseEntity.status(401).body(null));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<EarningDTO> update(@PathVariable Long id, @Valid @RequestBody EarningDTO dto, JwtAuthenticationToken token) {
+    @PutMapping
+    public ResponseEntity<EarningDTO> update(@Valid @RequestBody EarningDTO dto, JwtAuthenticationToken token) {
         return TokenUtils.getUserFromToken(token).map(user -> {
-            Optional<Earning> optionalEarning = earningRepository.findById(id);
+            Optional<Earning> optionalEarning = earningRepository.findById(dto.getId());
             if (optionalEarning.isPresent() && optionalEarning.get().getUser().equals(user)) {
                 Earning earning = optionalEarning.get();
                 EarningMapper.updateEntityFromDTO(earning, dto);

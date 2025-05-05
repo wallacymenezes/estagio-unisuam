@@ -36,4 +36,18 @@ public class ExpenseMapper {
 
         return expense;
     }
+
+    public static Expense updateEntityFromDTO(Expense existingExpense, ExpenseDTO dto, Category category) {
+        if (existingExpense == null || dto == null) {
+            return existingExpense;
+        }
+
+        existingExpense.setName(dto.getName());
+        existingExpense.setDescription(dto.getDescription());
+        existingExpense.setValue(dto.getValue());
+        existingExpense.setCategory(category); // Atualiza categoria (já buscada pelo nome)
+
+        return existingExpense;
+    }
+
 }
