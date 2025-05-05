@@ -4,6 +4,7 @@ import com.wallacy.projetoestagio.dto.ExpenseDTO;
 import com.wallacy.projetoestagio.mapper.ExpenseMapper;
 import com.wallacy.projetoestagio.model.Category;
 import com.wallacy.projetoestagio.model.Expense;
+import com.wallacy.projetoestagio.model.User;
 import com.wallacy.projetoestagio.repository.CategoryRepository;
 import com.wallacy.projetoestagio.repository.ExpenseRepository;
 import com.wallacy.projetoestagio.util.TokenUtils;
@@ -85,15 +86,20 @@ public class ExpenseController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id, JwtAuthenticationToken token) {
-        return TokenUtils.getUserFromToken(token).map(user ->
-                expenseRepository.findById(id)
-                        .filter(expense -> expense.getUser().equals(user))
-                        .map(expense -> {
-                            expenseRepository.delete(expense);
-                            return ResponseEntity.noContent().build(); // ← return adicionado aqui
-                        })
-                        .orElseGet(() -> ResponseEntity.status(403).build())
-        ).orElseGet(() -> ResponseEntity.status(401).build());
+        Optional<User> userOptional = TokenUtils.getUserFromToken(token);
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.status(401).build();
+        }
+
+        User user = userOptional.get();
+        Optional<Expense> optionalExpense = expenseRepository.findById(id);
+
+        if (optionalExpense.isPresent() && optionalExpense.get().getUser().equals(user)) {
+            expenseRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.status(403).build();
+        }
     }
 
 }
