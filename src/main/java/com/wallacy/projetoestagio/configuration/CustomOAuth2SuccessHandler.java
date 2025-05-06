@@ -57,6 +57,6 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         String token = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
 
         // Redireciona para o frontend com token
-        response.sendRedirect("http://localhost:3000/oauth2/callback?token=" + token);
+        response.sendRedirect("https://backend-estagio-unisuam.onrender.com/auth/google/callback?token=" + token);
     }
 }
