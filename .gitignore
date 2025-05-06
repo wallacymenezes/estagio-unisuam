@@ -31,7 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-### chaves de decodificação ###
-/src/main/resources/app.key
-/src/main/resources/app.pub
