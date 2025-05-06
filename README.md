@@ -38,7 +38,6 @@ O banco de dados foi modelado em **PostgreSQL**. A estrutura atual inclui as seg
 O projeto contribui para os seguintes Objetivos de Desenvolvimento Sustentável:
 
 - **ODS 1**: Erradicação da pobreza – ao ajudar no controle de finanças e evitar inadimplência.
-- **ODS 4**: Educação de qualidade – promove a educação financeira entre jovens.
 - **ODS 8**: Trabalho decente e crescimento econômico – incentiva o planejamento financeiro.
 - **ODS 10**: Redução das desigualdades – contribui com inclusão financeira de estudantes vulneráveis.
 
@@ -64,7 +63,6 @@ O projeto contribui para os seguintes Objetivos de Desenvolvimento Sustentável:
     - CRUD de gastos com categorias
     - CRUD de investimentos
     - CRUD de objetivos com prazo
-    - Dashboard para visualização gráfica (futuramente)
 
 3. **Possível melhoria futura**
     - Implementação de recurso de **família** para gestão compartilhada entre usuários.
@@ -79,7 +77,6 @@ O projeto contribui para os seguintes Objetivos de Desenvolvimento Sustentável:
 ![Spring Data JPA](https://img.shields.io/badge/Spring%20Data%20JPA-6DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
 ![Spring Security](https://img.shields.io/badge/Spring%20Security-6DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1.svg?style=for-the-badge&logo=postgresql&logoColor=white)
-![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-38B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
 
 ---
@@ -87,7 +84,6 @@ O projeto contribui para os seguintes Objetivos de Desenvolvimento Sustentável:
 ## 🛠️ Ferramentas
 
 ![IntelliJ IDEA](https://img.shields.io/badge/IntelliJIDEA-000000.svg?style=for-the-badge&logo=intellij-idea&logoColor=white)
-![VS Code](https://img.shields.io/badge/VSCode-007ACC.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white)
 ![Insomnia](https://img.shields.io/badge/Insomnia-black?style=for-the-badge&logo=insomnia&logoColor=5849BE)
 ![Render](https://img.shields.io/badge/Render-000000.svg?style=for-the-badge&logo=render&logoColor=white)
 
@@ -96,9 +92,9 @@ O projeto contribui para os seguintes Objetivos de Desenvolvimento Sustentável:
 ## 📅 Status do Projeto
 
 - **Status**: Em desenvolvimento
-- **Autor**: *[Seu Nome]*
-- **Data de Início**: [dd/mm/aaaa]
-- **Previsão de Conclusão**: [dd/mm/aaaa]
+- **Autor**: *Wallacy Menezess*
+- **Data de Início**: [06/03/2025]
+- **Previsão de Conclusão**: [23/05/2025]
 
 ---
 
