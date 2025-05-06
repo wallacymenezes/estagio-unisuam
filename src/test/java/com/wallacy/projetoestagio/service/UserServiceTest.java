@@ -42,7 +42,7 @@ public class UserServiceTest {
 
     @Test
     void registerUser_shouldSaveNewUser_whenEmailIsUnique() {
-        UserDTO dto = new UserDTO(UUID.randomUUID(), "Teste", "teste@email.com", "senha123", null);
+        UserDTO dto = new UserDTO(UUID.randomUUID(), "Teste", "teste@email.com", "foto.png", "senha123", "GOOGLE");
         dto.setEarnings(new ArrayList<>());
         dto.setExpenses(new ArrayList<>());
         User userEntity = UserMapper.toEntity(dto);
@@ -61,7 +61,7 @@ public class UserServiceTest {
 
     @Test
     void registerUser_shouldThrow_whenEmailAlreadyExists() {
-        UserDTO dto = new UserDTO(UUID.randomUUID(), "Teste", "ja@existe.com", "senha123", null);
+        UserDTO dto = new UserDTO(UUID.randomUUID(), "Teste", "ja@existe.com", "foto.png", "senha123", "GOOGLE");
 
         when(userRepository.findByEmail(dto.getEmail()))
                 .thenReturn(Optional.of(new User()));
@@ -79,7 +79,7 @@ public class UserServiceTest {
     @Test
     void updateUser_shouldUpdateUser_whenUserIsValidAndLoggedIn() {
         UUID userId = UUID.randomUUID();
-        UserDTO dto = new UserDTO(userId, "Atualizado", "novo@email.com", "novaSenha123", "foto.png");
+        UserDTO dto = new UserDTO(userId, "Atualizado", "novo@email.com", "foto.png", "novaSenha123", "GOOGLE");
 
         User existing = new User();
         existing.setUserId(userId);
@@ -104,7 +104,7 @@ public class UserServiceTest {
 
     @Test
     void updateUser_shouldThrow_whenLoggedUserTriesToEditAnotherUser() {
-        UserDTO dto = new UserDTO(UUID.randomUUID(), "Usuário", "email@email.com", null, null);
+        UserDTO dto = new UserDTO(UUID.randomUUID(), "Usuário", "email@email.com", "foto.png", "senha123", "GOOGLE");
         JwtAuthenticationToken token = mock(JwtAuthenticationToken.class);
         when(token.getName()).thenReturn(UUID.randomUUID().toString()); // id diferente
 
@@ -117,7 +117,7 @@ public class UserServiceTest {
     @Test
     void updateUser_shouldThrow_whenUserNotFound() {
         UUID userId = UUID.randomUUID();
-        UserDTO dto = new UserDTO(userId, "Usuário", "email@email.com", null, null);
+        UserDTO dto = new UserDTO(userId, "Usuário", "email@email.com", "foto.png", "senha123", "GOOGLE");
         JwtAuthenticationToken token = mock(JwtAuthenticationToken.class);
         when(token.getName()).thenReturn(userId.toString());
 
@@ -132,7 +132,7 @@ public class UserServiceTest {
     @Test
     void updateUser_shouldThrow_whenEmailAlreadyUsedByAnotherUser() {
         UUID userId = UUID.randomUUID();
-        UserDTO dto = new UserDTO(userId, "Novo Nome", "email@usado.com", null, null);
+        UserDTO dto = new UserDTO(userId, "Novo Nome", "email@usado.com", "foto.png", "senha123", "GOOGLE");
         JwtAuthenticationToken token = mock(JwtAuthenticationToken.class);
         when(token.getName()).thenReturn(userId.toString());
 
