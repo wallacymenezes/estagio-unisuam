@@ -33,8 +33,5 @@ COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
 COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
 COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
 
-# Expor a porta 8080 para acesso ao backend
-EXPOSE 8080
-
 # Entrypoint para rodar a aplicação Spring Boot
 ENTRYPOINT ["java", "-cp", "app:app/lib/*", "com.wallacy.projetoestagio.ProjetoEstagioApplication"]
