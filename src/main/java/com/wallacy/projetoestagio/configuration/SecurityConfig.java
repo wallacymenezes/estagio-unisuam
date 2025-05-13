@@ -25,7 +25,6 @@ import org.springframework.web.filter.CorsFilter;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
-import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -44,7 +43,10 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         // Permite qualquer origem
-        config.setAllowedOrigins(Collections.singletonList("*"));  // * permite todas as origens
+        config.setAllowedOrigins(Arrays.asList(
+                "https://v0-projeto-estagio.vercel.app", // Frontend principal
+                "https://v0-projeto-estagio.vercel.app/login" // URL específica do login
+                 ));
 
         // Permite todos os métodos (GET, POST, PUT, DELETE, etc.)
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
