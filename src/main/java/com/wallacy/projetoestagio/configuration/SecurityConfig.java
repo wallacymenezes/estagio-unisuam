@@ -3,8 +3,10 @@ package com.wallacy.projetoestagio.configuration;
 import com.nimbusds.jose.jwk.*;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -21,6 +23,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import java.security.interfaces.RSAPrivateKey;
@@ -38,29 +41,31 @@ public class SecurityConfig {
     @Value("${jwt.private.key}")
     private RSAPrivateKey privateKey;
 
+    @Value("${cors.origins}")
+    private String corsOrigins;
+
     @Bean
-    public CorsFilter corsFilter() {
+    CorsConfigurationSource corsConfigurationSource() {
+
+        String[] origins = corsOrigins.split(",");
+
+        CorsConfiguration corsConfig = new CorsConfiguration();
+        corsConfig.setAllowedOriginPatterns(Arrays.asList(origins));
+        corsConfig.setAllowedMethods(Arrays.asList("POST", "GET", "PUT", "DELETE", "PATCH"));
+        corsConfig.setAllowCredentials(true);
+        corsConfig.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
+        source.registerCorsConfiguration("/**", corsConfig);
+        return source;
+    }
 
-        // Permite qualquer origem
-        config.setAllowedOrigins(Arrays.asList(
-                "https://v0-projeto-estagio.vercel.app", // Frontend principal
-                "https://v0-projeto-estagio.vercel.app/login" // URL específica do login
-                 ));
-
-        // Permite todos os métodos (GET, POST, PUT, DELETE, etc.)
-        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-
-        // Permite todos os cabeçalhos (Authorization, Content-Type, etc.)
-        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
-
-        // Permite que credenciais sejam enviadas (se necessário)
-        config.setAllowCredentials(true);
-
-        source.registerCorsConfiguration("/**", config);  // Aplicar a configuração em todos os endpoints
-
-        return new CorsFilter(source);
+    @Bean
+    FilterRegistrationBean<CorsFilter> corsFilter() {
+        FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(
+                new CorsFilter(corsConfigurationSource()));
+        bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        return bean;
     }
 
     @Bean
