@@ -18,9 +18,14 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -32,6 +37,28 @@ public class SecurityConfig {
 
     @Value("${jwt.private.key}")
     private RSAPrivateKey privateKey;
+
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+
+        // Permite qualquer origem
+        config.setAllowedOrigins(Collections.singletonList("*"));  // * permite todas as origens
+
+        // Permite todos os métodos (GET, POST, PUT, DELETE, etc.)
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+
+        // Permite todos os cabeçalhos (Authorization, Content-Type, etc.)
+        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
+
+        // Permite que credenciais sejam enviadas (se necessário)
+        config.setAllowCredentials(true);
+
+        source.registerCorsConfiguration("/**", config);  // Aplicar a configuração em todos os endpoints
+
+        return new CorsFilter(source);
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
