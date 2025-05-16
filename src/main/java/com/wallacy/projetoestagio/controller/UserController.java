@@ -55,16 +55,4 @@ public class UserController {
                 .map(response -> ResponseEntity.status(HttpStatus.OK).body(response))
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
-
-    // Novo endpoint /users/me
-    @GetMapping("/me")
-    public ResponseEntity<UserDTO> getMe(JwtAuthenticationToken accessToken) {
-        // Obtém o ID do usuário a partir do token
-        UUID userId = UUID.fromString(accessToken.getName());
-
-        // Recupera o usuário com o ID extraído do token
-        return userRepository.findByUserId(userId)
-                .map(user -> ResponseEntity.ok(UserMapper.toDTO(user)))  // Retorna o UserDTO
-                .orElse(ResponseEntity.notFound().build());  // Se não encontrar o usuário
-    }
 }
