@@ -96,10 +96,10 @@ public class SecurityConfig {
                 // Adicione a configuração explícita de CORS
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/users/register", "/auth/recover-token", "/auth/validate-otp").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/recover-token", "/auth/validate-otp").permitAll()
                         // Permitir OPTIONS para todas as URLs (importante para CORS)
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/users/login").permitAll()
+                        .requestMatchers("/users/login", "/users/register").permitAll()
                         // Permitindo todos os endpoints do Swagger sem autenticação
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-resources/**", "/webjars/**").permitAll()
                         .anyRequest().authenticated()
@@ -108,7 +108,6 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2Login(oauth -> oauth
                         .userInfoEndpoint(user -> user.userService(oAuth2UserService()))
-                        .loginPage("/login")
                         .successHandler(successHandler)
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
