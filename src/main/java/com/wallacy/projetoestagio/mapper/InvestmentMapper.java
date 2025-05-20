@@ -2,6 +2,7 @@ package com.wallacy.projetoestagio.mapper;
 
 import com.wallacy.projetoestagio.dto.InvestmentDTO;
 import com.wallacy.projetoestagio.model.Investment;
+import com.wallacy.projetoestagio.model.Objective;
 import com.wallacy.projetoestagio.model.User;
 
 import java.util.List;
@@ -9,12 +10,6 @@ import java.util.stream.Collectors;
 
 public class InvestmentMapper {
 
-    /**
-     * Converts an Investment entity to InvestmentDTO
-     *
-     * @param investment the entity to convert
-     * @return the DTO representation
-     */
     public static InvestmentDTO toDTO(Investment investment) {
         if (investment == null) {
             return null;
@@ -28,76 +23,68 @@ public class InvestmentMapper {
                 investment.getMonths(),
                 investment.getCreation_date(),
                 investment.getValue(),
+                investment.getObjective() != null ? investment.getObjective().getId() : null,
                 investment.getType().getLabel()
         );
     }
 
-    /**
-     * Converts an InvestmentDTO to Investment entity
-     *
-     * @param investmentDTO the DTO to convert
-     * @param user the user associated with the investment
-     * @return the entity representation
-     */
-    public static Investment toEntity(InvestmentDTO investmentDTO, User user) {
-        if (investmentDTO == null) {
+    public static Investment toEntity(InvestmentDTO dto, User user, Objective objective) {
+        if (dto == null) {
             return null;
         }
 
         Investment investment = new Investment();
-        investment.setId(investmentDTO.getId());
-        investment.setName(investmentDTO.getName());
-        investment.setDescription(investmentDTO.getDescription());
-        investment.setPercentage(investmentDTO.getPercentage());
-        investment.setMonths(investmentDTO.getMonths());
-        investment.setCreation_date(investmentDTO.getCreation_date());
-        investment.setValue(investmentDTO.getValue());
+        investment.setId(dto.getId());
+        investment.setName(dto.getName());
+        investment.setDescription(dto.getDescription());
+        investment.setPercentage(dto.getPercentage());
+        investment.setMonths(dto.getMonths());
+        investment.setCreation_date(dto.getCreation_date());
+        investment.setValue(dto.getValue());
         investment.setUser(user);
-        investment.setType(Investment.InvestmentType.valueOf(investmentDTO.getInvestmentType()));
+        investment.setType(Investment.InvestmentType.valueOf(dto.getInvestmentType()));
+
+        if (objective != null) {
+            investment.setObjective(objective);
+        }
 
         return investment;
     }
 
-    /**
-     * Converts a list of Investment entities to a list of InvestmentDTOs
-     *
-     * @param investments the list of entities to convert
-     * @return the list of DTO representations
-     */
     public static List<InvestmentDTO> toDTOList(List<Investment> investments) {
         return investments.stream()
                 .map(InvestmentMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Updates an existing Investment entity with data from a DTO
-     *
-     * @param existing the existing entity to update
-     * @param investmentDTO the DTO containing the new data
-     * @return the updated entity
-     */
-    public static Investment updateEntityFromDTO(Investment existing, InvestmentDTO investmentDTO) {
-        if (investmentDTO == null) {
-            return existing;
+    public static Investment updateEntityFromDTO(Investment existing, InvestmentDTO dto, Objective objective) {
+        if (dto == null) return existing;
+
+        if (dto.getName() != null) {
+            existing.setName(dto.getName());
         }
 
-        if (investmentDTO.getName() != null) {
-            existing.setName(investmentDTO.getName());
+        if (dto.getDescription() != null) {
+            existing.setDescription(dto.getDescription());
         }
-        if (investmentDTO.getDescription() != null) {
-            existing.setDescription(investmentDTO.getDescription());
+
+        if (dto.getPercentage() > 0) {
+            existing.setPercentage(dto.getPercentage());
         }
-        if (investmentDTO.getPercentage() > 0) {
-            existing.setPercentage(investmentDTO.getPercentage());
+
+        if (dto.getMonths() > 0) {
+            existing.setMonths(dto.getMonths());
         }
-        if (investmentDTO.getMonths() > 0) {
-            existing.setMonths(investmentDTO.getMonths());
+
+        if (dto.getValue() != null) {
+            existing.setValue(dto.getValue());
         }
-        if (investmentDTO.getValue() != null) {
-            existing.setValue(investmentDTO.getValue());
+
+        if (dto.getInvestmentType() != null) {
+            existing.setType(Investment.InvestmentType.valueOf(dto.getInvestmentType()));
         }
-        existing.setType(Investment.InvestmentType.valueOf(investmentDTO.getInvestmentType()));
+
+        existing.setObjective(objective); // Pode ser null para desvincular
 
         return existing;
     }

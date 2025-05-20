@@ -42,6 +42,11 @@ public class Investment {
     @JsonIgnoreProperties("investments")
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "objective_id", nullable = true)
+    @JsonIgnoreProperties("investments")
+    private Objective objective;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private InvestmentType type;
@@ -70,7 +75,7 @@ public class Investment {
     public Investment() {
     }
 
-    public Investment(Long id, String name, String description, double percentage, int months, String creation_date, BigDecimal value, User user, InvestmentType type) {
+    public Investment(Long id, String name, String description, double percentage, int months, String creation_date, BigDecimal value, User user, Objective objective, InvestmentType type) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -79,6 +84,7 @@ public class Investment {
         this.creation_date = creation_date;
         this.value = value;
         this.user = user;
+        this.objective = objective;
         this.type = type;
     }
 
@@ -92,28 +98,27 @@ public class Investment {
         this.id = id;
     }
 
-    public @NotNull(message = "The name cannot be empty") String getName() {
+    public String getName() {
         return name;
     }
 
-    public void setName(@NotNull(message = "The name cannot be empty") String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public @Size(min = 1, max = 1000, message = "The description must be less than 1000 characters") String getDescription() {
+    public String getDescription() {
         return description;
     }
 
-    public void setDescription(@Size(min = 1, max = 1000, message = "The description must be less than 1000 characters") String description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    @DecimalMin(value = "0.0", inclusive = false, message = "Value must be greater than zero")
     public double getPercentage() {
         return percentage;
     }
 
-    public void setPercentage(@DecimalMin(value = "0.0", inclusive = false, message = "Value must be greater than zero") double percentage) {
+    public void setPercentage(double percentage) {
         this.percentage = percentage;
     }
 
@@ -133,11 +138,11 @@ public class Investment {
         this.creation_date = creation_date;
     }
 
-    public @DecimalMin(value = "0.0", inclusive = false, message = "Value must be greater than zero") @Digits(integer = 10, fraction = 2, message = "Invalid value. Maximum of 10 whole digits and 2 decimals.") @NotNull(message = "The value is mandatory") BigDecimal getValue() {
+    public BigDecimal getValue() {
         return value;
     }
 
-    public void setValue(@DecimalMin(value = "0.0", inclusive = false, message = "Value must be greater than zero") @Digits(integer = 10, fraction = 2, message = "Invalid value. Maximum of 10 whole digits and 2 decimals.") @NotNull(message = "The value is mandatory") BigDecimal value) {
+    public void setValue(BigDecimal value) {
         this.value = value;
     }
 
@@ -147,6 +152,14 @@ public class Investment {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Objective getObjective() {
+        return objective;
+    }
+
+    public void setObjective(Objective objective) {
+        this.objective = objective;
     }
 
     public InvestmentType getType() {

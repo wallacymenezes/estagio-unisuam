@@ -31,6 +31,9 @@ public class User {
     private String registrationMethod;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.REMOVE)
+    List<Category> categories = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.REMOVE)
     @JsonIgnoreProperties("user")
     private List<Earning> earnings = new ArrayList<>();
 
@@ -93,6 +96,14 @@ public class User {
 
     public void setRegistrationMethod(String registrationMethod) {
         this.registrationMethod = registrationMethod;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
 
     public List<Earning> getEarnings() {

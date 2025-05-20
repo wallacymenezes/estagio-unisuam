@@ -21,6 +21,14 @@ public class Category {
     @Size(min = 1, max = 1000, message = "The description must be less than 1000 characters")
     private String description;
 
+    @Size(max = 7, message = "Color must be a valid hex code (e.g., #FFFFFF)")
+    private String color;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnoreProperties("categories")
+    private User user;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "category", cascade = CascadeType.REMOVE)
     @JsonIgnoreProperties("category")
     private List<Expense> spending_by_category;
@@ -30,10 +38,12 @@ public class Category {
     public Category() {
     }
 
-    public Category(Long id, String name, String description) {
+    public Category(Long id, String name, String description, String color, User user) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.color = color;
+        this.user = user;
     }
 
     // Getters e setters
@@ -54,12 +64,28 @@ public class Category {
         this.name = name;
     }
 
-    public @Size(min = 1, max = 1000, message = "The description must be less than 1000 characters") String getDescription() {
+    public String getDescription() {
         return description;
     }
 
     public void setDescription(@Size(min = 1, max = 1000, message = "The description must be less than 1000 characters") String description) {
         this.description = description;
+    }
+
+    public void setColor(@Size(max = 7) String color) {
+        this.color = color;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public List<Expense> getSpending_by_category() {

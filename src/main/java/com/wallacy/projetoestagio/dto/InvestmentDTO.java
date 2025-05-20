@@ -11,6 +11,7 @@ public class InvestmentDTO {
     private int months;
     private String creation_date;
     private BigDecimal value;
+    private Long objectiveId;
     private String investmentType; // Pode ser usado para representar o enum como String
 
     // Constructors
@@ -18,7 +19,7 @@ public class InvestmentDTO {
     public InvestmentDTO() {
     }
 
-    public InvestmentDTO(Long id, String name, String description, double percentage, int months, String creation_date, BigDecimal value, String investmentType) {
+    public InvestmentDTO(Long id, String name, String description, double percentage, int months, String creation_date, BigDecimal value, Long objectiveId, String investmentType) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -26,6 +27,7 @@ public class InvestmentDTO {
         this.months = months;
         this.creation_date = creation_date;
         this.value = value;
+        this.objectiveId = objectiveId;
         this.investmentType = investmentType;
     }
 
@@ -77,6 +79,14 @@ public class InvestmentDTO {
 
     public void setCreation_date(String creation_date) {
         this.creation_date = creation_date;
+    }
+
+    public Long getObjectiveId() {
+        return objectiveId;
+    }
+
+    public void setObjectiveId(Long objectiveId) {
+        this.objectiveId = objectiveId;
     }
 
     public BigDecimal getValue() {
