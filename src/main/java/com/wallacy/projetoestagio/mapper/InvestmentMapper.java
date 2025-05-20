@@ -51,12 +51,6 @@ public class InvestmentMapper {
         return investment;
     }
 
-    public static List<InvestmentDTO> toDTOList(List<Investment> investments) {
-        return investments.stream()
-                .map(InvestmentMapper::toDTO)
-                .collect(Collectors.toList());
-    }
-
     public static Investment updateEntityFromDTO(Investment existing, InvestmentDTO dto, Objective objective) {
         if (dto == null) return existing;
 

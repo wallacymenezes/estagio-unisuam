@@ -3,8 +3,10 @@ package com.wallacy.projetoestagio.controller;
 import com.wallacy.projetoestagio.dto.InvestmentDTO;
 import com.wallacy.projetoestagio.mapper.InvestmentMapper;
 import com.wallacy.projetoestagio.model.Investment;
+import com.wallacy.projetoestagio.model.Objective;
 import com.wallacy.projetoestagio.model.User;
 import com.wallacy.projetoestagio.repository.InvestmentRepository;
+import com.wallacy.projetoestagio.repository.ObjectiveRepository;
 import com.wallacy.projetoestagio.util.TokenUtils;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +23,11 @@ import java.util.stream.Collectors;
 public class InvestmentController {
 
     private final InvestmentRepository investmentRepository;
+    private final ObjectiveRepository objectiveRepository;
 
-    public InvestmentController(InvestmentRepository investmentRepository) {
+    public InvestmentController(InvestmentRepository investmentRepository, ObjectiveRepository objectiveRepository) {
         this.investmentRepository = investmentRepository;
+        this.objectiveRepository = objectiveRepository;
     }
 
     @GetMapping
@@ -51,7 +55,11 @@ public class InvestmentController {
     @PostMapping
     public ResponseEntity<InvestmentDTO> create(@Valid @RequestBody InvestmentDTO dto, JwtAuthenticationToken token) {
         return TokenUtils.getUserFromToken(token).map(user -> {
-            Investment investment = InvestmentMapper.toEntity(dto, user);
+            Objective objective = null;
+            if (dto.getObjectiveId() != null) {
+                objective = objectiveRepository.findById(dto.getObjectiveId()).orElse(null);
+            }
+            Investment investment = InvestmentMapper.toEntity(dto, user, objective);
             Investment saved = investmentRepository.save(investment);
             return ResponseEntity.status(201).body(InvestmentMapper.toDTO(saved));
         }).orElseGet(() -> ResponseEntity.status(401).body(null));
@@ -63,7 +71,11 @@ public class InvestmentController {
             Optional<Investment> optionalInvestment = investmentRepository.findById(dto.getId());
             if (optionalInvestment.isPresent() && optionalInvestment.get().getUser().equals(user)) {
                 Investment investment = optionalInvestment.get();
-                InvestmentMapper.updateEntityFromDTO(investment, dto);
+                Objective objective = null;
+                if (dto.getObjectiveId() != null) {
+                    objective = objectiveRepository.findById(dto.getObjectiveId()).orElse(null);
+                }
+                InvestmentMapper.updateEntityFromDTO(investment, dto, objective);
                 investmentRepository.save(investment);
                 return ResponseEntity.ok(InvestmentMapper.toDTO(investment));
             } else {
