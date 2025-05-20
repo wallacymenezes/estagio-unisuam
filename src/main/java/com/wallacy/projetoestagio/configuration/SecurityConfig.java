@@ -102,11 +102,13 @@ public class SecurityConfig {
                         .requestMatchers("/users/login", "/users/register").permitAll()
                         // Permitindo todos os endpoints do Swagger sem autenticação
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-resources/**", "/webjars/**").permitAll()
+                        .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2Login(oauth -> oauth
+                        .loginPage("/oauth2/authorization/google")
                         .userInfoEndpoint(user -> user.userService(oAuth2UserService()))
                         .successHandler(successHandler)
                 )
