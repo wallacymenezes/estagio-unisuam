@@ -67,36 +67,31 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
                                                    CustomOAuth2SuccessHandler successHandler) throws Exception {
         http
-                // Configuração CORS
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                // Configuração de autorização para rotas
                 .authorizeHttpRequests(auth -> auth
-                        // Permitir acesso livre para login próprio e registro
                         .requestMatchers(HttpMethod.POST, "/auth/login", "/users/register", "/auth/recover-token", "/auth/validate-otp").permitAll()
-                        // Permitir método OPTIONS para todas rotas (CORS preflight)
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        // Permitir Swagger (documentação)
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-resources/**", "/webjars/**").permitAll()
-                        // Permitir rotas OAuth2 do Google
                         .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
-                        // Qualquer outra requisição precisa estar autenticada
                         .anyRequest().authenticated()
                 )
-                // Desabilitar CSRF para APIs RESTful
                 .csrf(csrf -> csrf.disable())
-                // Sem sessão, stateless
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                // Configurar login via OAuth2 (Google)
-                .oauth2Login(oauth -> oauth
-                        .loginPage("/oauth2/authorization/google")  // Endpoint para iniciar OAuth
-                        .userInfoEndpoint(user -> user.userService(oAuth2UserService()))
-                        .successHandler(successHandler) // Handler pós-login
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) ->
+                                response.sendError(401, "Unauthorized") // <-- Aqui está a mágica
+                        )
                 )
-                // Configurar suporte para JWT no resource server
+                .oauth2Login(oauth -> oauth
+                        .loginPage("/oauth2/authorization/google")
+                        .userInfoEndpoint(user -> user.userService(oAuth2UserService()))
+                        .successHandler(successHandler)
+                )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()));
 
         return http.build();
     }
+
 
     // Beans JWT encoder/decoder para assinatura do token
     @Bean
