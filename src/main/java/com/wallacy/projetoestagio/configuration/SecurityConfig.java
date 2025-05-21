@@ -29,7 +29,8 @@ import org.springframework.web.filter.CorsFilter;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
-import java.util.Collections;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -50,30 +51,11 @@ public class SecurityConfig {
         String[] origins = corsOrigins.split(",");
 
         CorsConfiguration corsConfig = new CorsConfiguration();
-        // Permitir todos os origins fornecidos na propriedade
         corsConfig.setAllowedOriginPatterns(Arrays.asList(origins));
-        // Permitir mais métodos HTTP comuns
-        corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        // Permitir credenciais como cookies
+        corsConfig.setAllowedMethods(Arrays.asList("*"));
         corsConfig.setAllowCredentials(true);
-        // Ampliar a lista de headers permitidos
-        corsConfig.setAllowedHeaders(Arrays.asList(
-                "Authorization",
-                "Content-Type",
-                "Accept",
-                "Origin",
-                "X-Requested-With",
-                "Access-Control-Request-Method",
-                "Access-Control-Request-Headers"
-        ));
-        // Expor headers que o cliente pode acessar
-        corsConfig.setExposedHeaders(Arrays.asList(
-                "Authorization",
-                "Content-Type",
-                "Access-Control-Allow-Origin",
-                "Access-Control-Allow-Credentials"
-        ));
-        // Tempo em segundos que o navegador pode fazer cache da resposta pré-voo
+        corsConfig.setAllowedHeaders(Arrays.asList("*"));
+        corsConfig.setExposedHeaders(Arrays.asList("*"));
         corsConfig.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -82,41 +64,41 @@ public class SecurityConfig {
     }
 
     @Bean
-    public FilterRegistrationBean<CorsFilter> corsFilter() {
-        FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(
-                new CorsFilter(corsConfigurationSource()));
-        bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
-        return bean;
-    }
-
-    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
                                                    CustomOAuth2SuccessHandler successHandler) throws Exception {
         http
-                // Adicione a configuração explícita de CORS
+                // Configuração CORS
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                // Configuração de autorização para rotas
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/auth/recover-token", "/auth/validate-otp").permitAll()
-                        // Permitir OPTIONS para todas as URLs (importante para CORS)
+                        // Permitir acesso livre para login próprio e registro
+                        .requestMatchers(HttpMethod.POST, "/auth/login", "/users/register", "/auth/recover-token", "/auth/validate-otp").permitAll()
+                        // Permitir método OPTIONS para todas rotas (CORS preflight)
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/users/login", "/users/register").permitAll()
-                        // Permitindo todos os endpoints do Swagger sem autenticação
+                        // Permitir Swagger (documentação)
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-resources/**", "/webjars/**").permitAll()
+                        // Permitir rotas OAuth2 do Google
                         .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
+                        // Qualquer outra requisição precisa estar autenticada
                         .anyRequest().authenticated()
                 )
+                // Desabilitar CSRF para APIs RESTful
                 .csrf(csrf -> csrf.disable())
+                // Sem sessão, stateless
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                // Configurar login via OAuth2 (Google)
                 .oauth2Login(oauth -> oauth
-                        .loginPage("/oauth2/authorization/google")
+                        .loginPage("/oauth2/authorization/google")  // Endpoint para iniciar OAuth
                         .userInfoEndpoint(user -> user.userService(oAuth2UserService()))
-                        .successHandler(successHandler)
+                        .successHandler(successHandler) // Handler pós-login
                 )
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+                // Configurar suporte para JWT no resource server
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()));
 
         return http.build();
     }
 
+    // Beans JWT encoder/decoder para assinatura do token
     @Bean
     public JwtEncoder jwtEncoder() {
         JWK jwk = new RSAKey.Builder(publicKey).privateKey(privateKey).build();
@@ -129,22 +111,24 @@ public class SecurityConfig {
         return NimbusJwtDecoder.withPublicKey(publicKey).build();
     }
 
+    // Password encoder bcrypt
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // Serviço padrão para carregar usuário OAuth2
     @Bean
     public OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService() {
         return new DefaultOAuth2UserService();
     }
 
-    // Configuração do handler para sucesso no login OAuth2
+    // Handler de sucesso pós login OAuth2
     @Bean
     public AuthenticationSuccessHandler oAuth2LoginSuccessHandler() {
         return (request, response, authentication) -> {
-            // Lógica após o login bem-sucedido (como redirecionamento ou configuração adicional)
-            response.sendRedirect("/home"); // Redireciona para o dashboard após login
+            // Redirecionar para página principal após login
+            response.sendRedirect("/home");
         };
     }
 }
