@@ -4,7 +4,7 @@ import com.wallacy.projetoestagio.model.User;
 import com.wallacy.projetoestagio.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -12,9 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminUserConfig implements CommandLineRunner {
 
     private UserRepository userRepository;
-    private BCryptPasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
-    public AdminUserConfig(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+    public AdminUserConfig(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
