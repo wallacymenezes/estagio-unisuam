@@ -1,11 +1,8 @@
 package com.wallacy.projetoestagio.controller;
 
 import com.wallacy.projetoestagio.dto.EarningDTO;
-import com.wallacy.projetoestagio.dto.ExpenseDTO;
 import com.wallacy.projetoestagio.mapper.EarningMapper;
-import com.wallacy.projetoestagio.mapper.ExpenseMapper;
 import com.wallacy.projetoestagio.model.Earning;
-import com.wallacy.projetoestagio.model.Expense;
 import com.wallacy.projetoestagio.model.User;
 import com.wallacy.projetoestagio.repository.EarningRepository;
 import com.wallacy.projetoestagio.repository.UserRepository;

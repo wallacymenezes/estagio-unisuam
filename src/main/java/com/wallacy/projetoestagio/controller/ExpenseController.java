@@ -8,7 +8,6 @@ import com.wallacy.projetoestagio.model.User;
 import com.wallacy.projetoestagio.repository.CategoryRepository;
 import com.wallacy.projetoestagio.repository.ExpenseRepository;
 import com.wallacy.projetoestagio.repository.UserRepository;
-import com.wallacy.projetoestagio.util.TokenUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
