@@ -9,6 +9,7 @@ public class UserDTO {
     private String name;
     private String email;
     private String photo;
+    private String token;
     private String password;
     private String registrationMethod;
 
@@ -22,12 +23,13 @@ public class UserDTO {
     public UserDTO() {
     }
 
-    public UserDTO(UUID userId, String name, String email, String photo, String password, String registrationMethod) {
+    public UserDTO(UUID userId, String name, String email, String photo, String password, String token, String registrationMethod) {
         this.userId = userId;
         this.name = name;
         this.email = email;
         this.photo = photo;
         this.password = password;
+        this.token = token;
         this.registrationMethod = registrationMethod;
     }
 
@@ -67,6 +69,14 @@ public class UserDTO {
 
     public String getRegistrationMethod() {
         return registrationMethod;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public void setRegistrationMethod(String registrationMethod) {

@@ -7,10 +7,9 @@ import com.wallacy.projetoestagio.model.Objective;
 import com.wallacy.projetoestagio.model.User;
 import com.wallacy.projetoestagio.repository.InvestmentRepository;
 import com.wallacy.projetoestagio.repository.ObjectiveRepository;
-import com.wallacy.projetoestagio.util.TokenUtils;
+import com.wallacy.projetoestagio.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,81 +23,103 @@ public class InvestmentController {
 
     private final InvestmentRepository investmentRepository;
     private final ObjectiveRepository objectiveRepository;
+    private final UserRepository userRepository;
 
-    public InvestmentController(InvestmentRepository investmentRepository, ObjectiveRepository objectiveRepository) {
+    public InvestmentController(InvestmentRepository investmentRepository, ObjectiveRepository objectiveRepository, UserRepository userRepository) {
         this.investmentRepository = investmentRepository;
         this.objectiveRepository = objectiveRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping
-    public ResponseEntity<List<InvestmentDTO>> getAll(JwtAuthenticationToken token) {
-        return TokenUtils.getUserFromToken(token).map(user -> {
-            List<InvestmentDTO> investments = user.getInvestments().stream()
-                    .map(InvestmentMapper::toDTO)
-                    .collect(Collectors.toList());
-            return ResponseEntity.ok(investments);
-        }).orElseGet(() -> ResponseEntity.status(401).body(null));
+    public ResponseEntity<List<InvestmentDTO>> getAll() {
+        List<Investment> investments = investmentRepository.findAll();
+        List<InvestmentDTO> dtos = investments.stream()
+                .map(InvestmentMapper::toDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<InvestmentDTO> getById(@PathVariable Long id, JwtAuthenticationToken token) {
-        return TokenUtils.getUserFromToken(token).map(user -> {
-            Optional<Investment> investment = investmentRepository.findById(id);
-            if (investment.isPresent() && investment.get().getUser().equals(user)) {
-                return ResponseEntity.ok(InvestmentMapper.toDTO(investment.get()));
-            } else {
-                return ResponseEntity.status(403).<InvestmentDTO>body(null);
-            }
-        }).orElseGet(() -> ResponseEntity.status(401).body(null));
+    public ResponseEntity<InvestmentDTO> getById(@PathVariable Long id) {
+        Optional<Investment> investmentOpt = investmentRepository.findById(id);
+        return investmentOpt
+                .map(investment -> ResponseEntity.ok(InvestmentMapper.toDTO(investment)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<InvestmentDTO> create(@Valid @RequestBody InvestmentDTO dto, JwtAuthenticationToken token) {
-        return TokenUtils.getUserFromToken(token).map(user -> {
-            Objective objective = null;
-            if (dto.getObjectiveId() != null) {
-                objective = objectiveRepository.findById(dto.getObjectiveId()).orElse(null);
-            }
-            Investment investment = InvestmentMapper.toEntity(dto, user, objective);
-            Investment saved = investmentRepository.save(investment);
-            return ResponseEntity.status(201).body(InvestmentMapper.toDTO(saved));
-        }).orElseGet(() -> ResponseEntity.status(401).body(null));
+    public ResponseEntity<?> create(@Valid @RequestBody InvestmentDTO dto) {
+        Optional<User> userOpt = userRepository.findByUserId(dto.getUserId());
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("Usuário não encontrado");
+        }
+
+        Objective objective = null;
+        if (dto.getObjectiveId() != null) {
+            objective = objectiveRepository.findById(dto.getObjectiveId()).orElse(null);
+        }
+
+        Investment investment = InvestmentMapper.toEntity(dto, userOpt.get(), objective);
+        Investment saved = investmentRepository.save(investment);
+        return ResponseEntity.status(201).body(InvestmentMapper.toDTO(saved));
     }
 
     @PutMapping
-    public ResponseEntity<InvestmentDTO> update(@Valid @RequestBody InvestmentDTO dto, JwtAuthenticationToken token) {
-        return TokenUtils.getUserFromToken(token).map(user -> {
-            Optional<Investment> optionalInvestment = investmentRepository.findById(dto.getId());
-            if (optionalInvestment.isPresent() && optionalInvestment.get().getUser().equals(user)) {
-                Investment investment = optionalInvestment.get();
-                Objective objective = null;
-                if (dto.getObjectiveId() != null) {
-                    objective = objectiveRepository.findById(dto.getObjectiveId()).orElse(null);
-                }
-                InvestmentMapper.updateEntityFromDTO(investment, dto, objective);
-                investmentRepository.save(investment);
-                return ResponseEntity.ok(InvestmentMapper.toDTO(investment));
-            } else {
-                return ResponseEntity.status(403).<InvestmentDTO>body(null);
-            }
-        }).orElseGet(() -> ResponseEntity.status(401).body(null));
+    public ResponseEntity<?> update(@Valid @RequestBody InvestmentDTO dto) {
+        Optional<Investment> investmentOpt = investmentRepository.findById(dto.getId());
+        if (investmentOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Optional<User> userOpt = userRepository.findByUserId(dto.getUserId());
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("Usuário não encontrado");
+        }
+
+        Objective objective = null;
+        if (dto.getObjectiveId() != null) {
+            objective = objectiveRepository.findById(dto.getObjectiveId()).orElse(null);
+        }
+
+        Investment investment = investmentOpt.get();
+        InvestmentMapper.updateEntityFromDTO(investment, dto, objective);
+        investment.setUser(userOpt.get());
+        investmentRepository.save(investment);
+
+        return ResponseEntity.ok(InvestmentMapper.toDTO(investment));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id, JwtAuthenticationToken token) {
-        Optional<User> userOptional = TokenUtils.getUserFromToken(token);
-        if (userOptional.isEmpty()) {
-            return ResponseEntity.status(401).build();
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        if (!investmentRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
         }
+        investmentRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 
-        User user = userOptional.get();
-        Optional<Investment> optionalInvestment = investmentRepository.findById(id);
-
-        if (optionalInvestment.isPresent() && optionalInvestment.get().getUser().equals(user)) {
-            investmentRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.status(403).build();
+    // Novo endpoint: investimentos de um usuário pelo userId
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<InvestmentDTO>> getByUserId(@PathVariable String userId) {
+        Optional<User> userOpt = userRepository.findByUserId(java.util.UUID.fromString(userId));
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
         }
+        List<Investment> investments = investmentRepository.findByUserUserId(userOpt.get().getUserId());
+        List<InvestmentDTO> dtos = investments.stream()
+                .map(InvestmentMapper::toDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
+    }
+
+    // Novo endpoint: investimentos por objectiveId
+    @GetMapping("/objective/{objectiveId}")
+    public ResponseEntity<List<InvestmentDTO>> getByObjectiveId(@PathVariable Long objectiveId) {
+        List<Investment> investments = investmentRepository.findByObjectiveId(objectiveId);
+        List<InvestmentDTO> dtos = investments.stream()
+                .map(InvestmentMapper::toDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
 }
+

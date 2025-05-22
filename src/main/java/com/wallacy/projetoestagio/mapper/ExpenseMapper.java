@@ -3,6 +3,9 @@ package com.wallacy.projetoestagio.mapper;
 import com.wallacy.projetoestagio.dto.ExpenseDTO;
 import com.wallacy.projetoestagio.model.Category;
 import com.wallacy.projetoestagio.model.Expense;
+import com.wallacy.projetoestagio.model.User;
+
+import java.util.UUID;
 
 public class ExpenseMapper {
 
@@ -11,17 +14,23 @@ public class ExpenseMapper {
             return null;
         }
 
+        UUID userId = null;
+        if (expense.getUser() != null) {
+            userId = expense.getUser().getUserId();
+        }
+
         return new ExpenseDTO(
                 expense.getId(),
                 expense.getName(),
                 expense.getDescription(),
                 expense.getValue(),
                 expense.getCreation_date(),
-                expense.getCategory() != null ? expense.getCategory().getName() : null
+                expense.getCategory() != null ? expense.getCategory().getName() : null,
+                userId
         );
     }
 
-    public static Expense toEntity(ExpenseDTO dto, Category category) {
+    public static Expense toEntity(ExpenseDTO dto, Category category, User user) {
         if (dto == null) {
             return null;
         }
@@ -32,7 +41,8 @@ public class ExpenseMapper {
         expense.setDescription(dto.getDescription());
         expense.setValue(dto.getValue());
         expense.setCreation_date(dto.getCreationDate());
-        expense.setCategory(category); // categoria já buscada previamente
+        expense.setCategory(category);
+        expense.setUser(user);
 
         return expense;
     }
@@ -45,9 +55,10 @@ public class ExpenseMapper {
         existingExpense.setName(dto.getName());
         existingExpense.setDescription(dto.getDescription());
         existingExpense.setValue(dto.getValue());
-        existingExpense.setCategory(category); // Atualiza categoria (já buscada pelo nome)
+        existingExpense.setCategory(category);
+
+        // Normalmente não atualizamos o usuário aqui
 
         return existingExpense;
     }
-
 }

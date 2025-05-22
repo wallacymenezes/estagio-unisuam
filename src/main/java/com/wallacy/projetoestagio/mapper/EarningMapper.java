@@ -11,9 +11,6 @@ public class EarningMapper {
 
     /**
      * Converts an Earning entity to EarningDTO
-     *
-     * @param earning the entity to convert
-     * @return the DTO representation
      */
     public static EarningDTO toDTO(Earning earning) {
         if (earning == null) {
@@ -26,16 +23,13 @@ public class EarningMapper {
                 earning.getDescription(),
                 earning.getValue(),
                 earning.isWage(),
-                earning.getCreation_date()
+                earning.getCreation_date(),
+                earning.getUser() != null ? earning.getUser().getUserId() : null // inclui userId
         );
     }
 
     /**
      * Converts an EarningDTO to Earning entity
-     *
-     * @param earningDTO the DTO to convert
-     * @param user the user associated with the earning
-     * @return the entity representation
      */
     public static Earning toEntity(EarningDTO earningDTO, User user) {
         if (earningDTO == null) {
@@ -56,9 +50,6 @@ public class EarningMapper {
 
     /**
      * Converts a list of Earning entities to a list of EarningDTOs
-     *
-     * @param earnings the list of entities to convert
-     * @return the list of DTO representations
      */
     public static List<EarningDTO> toDTOList(List<Earning> earnings) {
         return earnings.stream()
@@ -68,10 +59,6 @@ public class EarningMapper {
 
     /**
      * Updates an existing Earning entity with data from a DTO
-     *
-     * @param existing the existing entity to update
-     * @param earningDTO the DTO containing the new data
-     * @return the updated entity
      */
     public static Earning updateEntityFromDTO(Earning existing, EarningDTO earningDTO) {
         if (earningDTO == null) {
@@ -88,7 +75,8 @@ public class EarningMapper {
             existing.setValue(earningDTO.getValue());
         }
         existing.setWage(earningDTO.isWage());
-        // Normalmente não atualizamos a data de criação
+
+        // Normalmente não atualizamos a data de criação nem o usuário aqui
 
         return existing;
     }

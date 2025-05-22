@@ -1,6 +1,8 @@
 package com.wallacy.projetoestagio.dto;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.UUID;
 
 public class InvestmentDTO {
 
@@ -9,17 +11,16 @@ public class InvestmentDTO {
     private String description;
     private double percentage;
     private int months;
-    private String creation_date;
+    private String creation_date; // trocar String por LocalDateTime
     private BigDecimal value;
     private Long objectiveId;
-    private String investmentType; // Pode ser usado para representar o enum como String
+    private String investmentType;
+    private UUID userId;
 
-    // Constructors
+    public InvestmentDTO() {}
 
-    public InvestmentDTO() {
-    }
-
-    public InvestmentDTO(Long id, String name, String description, double percentage, int months, String creation_date, BigDecimal value, Long objectiveId, String investmentType) {
+    public InvestmentDTO(Long id, String name, String description, double percentage, int months,
+                         String creation_date, BigDecimal value, Long objectiveId, String investmentType, UUID userId) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -29,6 +30,7 @@ public class InvestmentDTO {
         this.value = value;
         this.objectiveId = objectiveId;
         this.investmentType = investmentType;
+        this.userId = userId;
     }
 
     // Getters e Setters
@@ -103,5 +105,13 @@ public class InvestmentDTO {
 
     public void setInvestmentType(String investmentType) {
         this.investmentType = investmentType;
+    }
+
+    public UUID getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UUID userId) {
+        this.userId = userId;
     }
 }

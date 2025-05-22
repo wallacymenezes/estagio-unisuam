@@ -7,9 +7,7 @@ import com.wallacy.projetoestagio.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
@@ -27,14 +25,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> getById(@PathVariable UUID id, JwtAuthenticationToken accessToken) {
-        UUID loggedUserId = UUID.fromString(accessToken.getName());
-
-        // Verifica se o usuário logado é o mesmo que está tentando ser editado
-        if (!loggedUserId.equals(id)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Você não tem permissão para buscar este usuário");
-        }
-
+    public ResponseEntity<UserDTO> getById(@PathVariable UUID id) {
         return userRepository.findByUserId(id)
                 .map(user -> ResponseEntity.ok(UserMapper.toDTO(user)))
                 .orElse(ResponseEntity.notFound().build());
@@ -49,9 +40,9 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<UserDTO> putUser(@Valid @RequestBody UserDTO userDTO, JwtAuthenticationToken accessToken) {
+    public ResponseEntity<UserDTO> putUser(@Valid @RequestBody UserDTO userDTO) {
 
-        return userService.updateUser(userDTO, accessToken)
+        return userService.updateUser(userDTO)
                 .map(response -> ResponseEntity.status(HttpStatus.OK).body(response))
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }

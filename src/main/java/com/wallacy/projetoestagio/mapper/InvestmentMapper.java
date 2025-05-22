@@ -5,9 +5,6 @@ import com.wallacy.projetoestagio.model.Investment;
 import com.wallacy.projetoestagio.model.Objective;
 import com.wallacy.projetoestagio.model.User;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 public class InvestmentMapper {
 
     public static InvestmentDTO toDTO(Investment investment) {
@@ -21,10 +18,11 @@ public class InvestmentMapper {
                 investment.getDescription(),
                 investment.getPercentage(),
                 investment.getMonths(),
-                investment.getCreation_date(),
+                investment.getCreation_date(),  // Passa Timestamp diretamente
                 investment.getValue(),
                 investment.getObjective() != null ? investment.getObjective().getId() : null,
-                investment.getType().getLabel()
+                investment.getType() != null ? investment.getType().getLabel() : null,
+                investment.getUser() != null ? investment.getUser().getUserId() : null
         );
     }
 
@@ -39,14 +37,21 @@ public class InvestmentMapper {
         investment.setDescription(dto.getDescription());
         investment.setPercentage(dto.getPercentage());
         investment.setMonths(dto.getMonths());
-        investment.setCreation_date(dto.getCreation_date());
+        investment.setCreation_date(dto.getCreation_date());  // Timestamp direto
         investment.setValue(dto.getValue());
         investment.setUser(user);
-        investment.setType(Investment.InvestmentType.valueOf(dto.getInvestmentType()));
 
-        if (objective != null) {
-            investment.setObjective(objective);
+        if (dto.getInvestmentType() != null) {
+            try {
+                investment.setType(Investment.InvestmentType.valueOf(dto.getInvestmentType().toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                investment.setType(null); // ou lance exceção, conforme regra de negócio
+            }
+        } else {
+            investment.setType(null);
         }
+
+        investment.setObjective(objective);
 
         return investment;
     }
@@ -75,10 +80,14 @@ public class InvestmentMapper {
         }
 
         if (dto.getInvestmentType() != null) {
-            existing.setType(Investment.InvestmentType.valueOf(dto.getInvestmentType()));
+            try {
+                existing.setType(Investment.InvestmentType.valueOf(dto.getInvestmentType().toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                // mantém ou limpa tipo, conforme regra
+            }
         }
 
-        existing.setObjective(objective); // Pode ser null para desvincular
+        existing.setObjective(objective); // pode ser null para desvincular
 
         return existing;
     }

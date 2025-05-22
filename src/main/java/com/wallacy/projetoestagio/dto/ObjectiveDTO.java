@@ -3,6 +3,7 @@ package com.wallacy.projetoestagio.dto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class ObjectiveDTO {
 
@@ -11,18 +12,20 @@ public class ObjectiveDTO {
     private BigDecimal target;
     private LocalDate term;
     private LocalDateTime creationDate;
+    private UUID userId;  // Novo campo para ID do usuário
 
     // Constructors
 
     public ObjectiveDTO() {
     }
 
-    public ObjectiveDTO(Long id, String name, BigDecimal target, LocalDate term, LocalDateTime creationDate) {
+    public ObjectiveDTO(Long id, String name, BigDecimal target, LocalDate term, LocalDateTime creationDate, UUID userId) {
         this.id = id;
         this.name = name;
         this.target = target;
         this.term = term;
         this.creationDate = creationDate;
+        this.userId = userId;
     }
 
     // Getters e Setters
@@ -65,5 +68,13 @@ public class ObjectiveDTO {
 
     public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
+    }
+
+    public UUID getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UUID userId) {
+        this.userId = userId;
     }
 }

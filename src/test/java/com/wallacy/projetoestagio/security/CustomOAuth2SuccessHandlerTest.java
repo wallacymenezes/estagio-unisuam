@@ -1,6 +1,5 @@
 package com.wallacy.projetoestagio.security;
 
-import com.wallacy.projetoestagio.configuration.CustomOAuth2SuccessHandler;
 import com.wallacy.projetoestagio.model.User;
 import com.wallacy.projetoestagio.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;

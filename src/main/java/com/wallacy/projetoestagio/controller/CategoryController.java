@@ -6,14 +6,14 @@ import com.wallacy.projetoestagio.model.Category;
 import com.wallacy.projetoestagio.model.User;
 import com.wallacy.projetoestagio.repository.CategoryRepository;
 import com.wallacy.projetoestagio.repository.UserRepository;
-import com.wallacy.projetoestagio.util.TokenUtils;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+
 
 @RestController
 @RequestMapping("/categories")
@@ -28,36 +28,69 @@ public class CategoryController {
         this.userRepository = userRepository;
     }
 
+    // Listar todas as categorias (sem autenticação) - retorna todas as categorias da base
     @GetMapping
-    public ResponseEntity<List<CategoryDTO>> getAll(JwtAuthenticationToken token) {
-        Optional<User> user = TokenUtils.getUserFromToken(token);
-        return user.map(value ->
-                ResponseEntity.ok(
-                        CategoryMapper.toDTOList(value.getCategories())
-                )
-        ).orElse(ResponseEntity.status(401).build());
+    public ResponseEntity<List<CategoryDTO>> getAll() {
+        List<Category> categories = categoryRepository.findAll();
+        List<CategoryDTO> dtos = CategoryMapper.toDTOList(categories);
+        return ResponseEntity.ok(dtos);
     }
 
+    // Criar nova categoria (sem usuário associado, você pode adaptar para passar usuário no body se quiser)
     @PostMapping
-    public ResponseEntity<CategoryDTO> create(@Valid @RequestBody CategoryDTO dto, JwtAuthenticationToken token) {
-        Optional<User> user = TokenUtils.getUserFromToken(token);
-        return user.map(u -> {
-            Category saved = categoryRepository.save(CategoryMapper.toEntity(dto, u));
-            return ResponseEntity.status(201).body(CategoryMapper.toDTO(saved));
-        }).orElse(ResponseEntity.status(401).build());
+    public ResponseEntity<CategoryDTO> create(@Valid @RequestBody CategoryDTO dto) {
+        Optional<User> userOpt = userRepository.findByUserId(dto.getUserId());
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.badRequest().build(); // ou lançar exceção com mensagem clara
+        }
+        Category category = CategoryMapper.toEntity(dto, (UserRepository) userOpt.get());
+        Category saved = categoryRepository.save(category);
+        return ResponseEntity.status(201).body(CategoryMapper.toDTO(saved));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id, JwtAuthenticationToken token) {
-        Optional<User> user = TokenUtils.getUserFromToken(token);
-        if (user.isEmpty()) return ResponseEntity.status(401).build();
 
+    @PutMapping
+    public ResponseEntity<CategoryDTO> update(@Valid @RequestBody CategoryDTO dto) {
+        Optional<Category> categoryOpt = categoryRepository.findById(dto.getId());
+        if (categoryOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Optional<User> userOpt = userRepository.findByUserId(dto.getUserId());
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Category category = categoryOpt.get();
+
+        Category updated = CategoryMapper.updateEntityFromDTO(category, dto);
+
+        updated.setUser(userOpt.get());
+
+        categoryRepository.save(updated);
+
+        return ResponseEntity.ok(CategoryMapper.toDTO(updated));
+    }
+
+    // Deletar categoria (sem verificação de usuário)
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         Optional<Category> category = categoryRepository.findById(id);
-        if (category.isPresent() && category.get().getUser().equals(user.get())) {
+        if (category.isPresent()) {
             categoryRepository.deleteById(id);
             return ResponseEntity.noContent().build();
         }
+        return ResponseEntity.notFound().build();
+    }
 
-        return ResponseEntity.status(403).build();
+    // Endpoint para trazer categorias de um usuário pelo ID
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<CategoryDTO>> getByUserId(@PathVariable UUID userId) {
+        List<Category> categories = categoryRepository.findByUserUserId(userId);
+        List<CategoryDTO> dtoList = CategoryMapper.toDTOList(categories);
+        return ResponseEntity.ok(dtoList);
     }
 }
+
+
+

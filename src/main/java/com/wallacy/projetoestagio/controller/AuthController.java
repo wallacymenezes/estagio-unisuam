@@ -2,10 +2,9 @@ package com.wallacy.projetoestagio.controller;
 
 import com.wallacy.projetoestagio.dto.*;
 import com.wallacy.projetoestagio.service.AuthService;
-import com.wallacy.projetoestagio.service.RecoveryService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -15,35 +14,30 @@ import java.util.Optional;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class AuthController {
 
-    private final AuthService authService;
-    private final RecoveryService recoveryService;
-
-    public AuthController(AuthService authService, RecoveryService recoveryService) {
-        this.authService = authService;
-        this.recoveryService = recoveryService;
-    }
+    @Autowired
+    private AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
-        return ResponseEntity.ok(authService.login(loginRequest));
+    public ResponseEntity<Optional<UserDTO>> login(@Valid @RequestBody LoginRequest loginRequest) {
+        return ResponseEntity.ok(authService.authenticateUsers(loginRequest));
     }
 
     // Endpoint para solicitar o envio do otp de recuperação
     @PostMapping("/recover-token")
     public ResponseEntity<Void> createRecoverToken(@Valid @RequestBody EmailRequest emailRequest) {
-        recoveryService.createRecoverToken(emailRequest.getEmail());
+        authService.createRecoverToken(emailRequest.getEmail());
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/validate-otp")
-    public ResponseEntity<Optional<LoginResponse>> validateOtp(@Valid @RequestBody CodeConfirm codeConfirm) {
-        Optional<LoginResponse> loginResponse = recoveryService.validateOtpAndGenerateToken(codeConfirm);
-        return ResponseEntity.ok(loginResponse);
+    public ResponseEntity<Optional<UserDTO>> validateOtp(@Valid @RequestBody String otp) {
+        Optional<UserDTO> userDTO = authService.validateOtpAndGenerateToken(otp);
+        return ResponseEntity.ok(userDTO);
     }
 
     @PostMapping("/change-password")
-    public ResponseEntity<Void> changePassword(@Valid @RequestBody String passwordChanged, JwtAuthenticationToken accessToken) {
-        recoveryService.changePassword(passwordChanged, accessToken);
+    public ResponseEntity<Void> changePassword(@Valid @RequestBody UserDTO userDTO) {
+        authService.changePassword(userDTO);
         return ResponseEntity.noContent().build();
     }
 }

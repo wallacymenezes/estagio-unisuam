@@ -9,12 +9,6 @@ import java.util.stream.Collectors;
 
 public class ObjectiveMapper {
 
-    /**
-     * Converts an Objective entity to ObjectiveDTO
-     *
-     * @param objective the entity to convert
-     * @return the DTO representation
-     */
     public static ObjectiveDTO toDTO(Objective objective) {
         if (objective == null) {
             return null;
@@ -25,66 +19,51 @@ public class ObjectiveMapper {
                 objective.getName(),
                 objective.getTarget(),
                 objective.getTerm(),
-                objective.getCreation_date()
+                objective.getCreation_date(),
+                objective.getUser() != null ? objective.getUser().getUserId() : null
         );
     }
 
-    /**
-     * Converts an ObjectiveDTO to Objective entity
-     *
-     * @param objectiveDTO the DTO to convert
-     * @param user the user associated with the objective
-     * @return the entity representation
-     */
-    public static Objective toEntity(ObjectiveDTO objectiveDTO, User user) {
-        if (objectiveDTO == null) {
+    public static Objective toEntity(ObjectiveDTO dto, User user) {
+        if (dto == null) {
             return null;
         }
 
         Objective objective = new Objective();
-        objective.setId(objectiveDTO.getId());
-        objective.setName(objectiveDTO.getName());
-        objective.setTarget(objectiveDTO.getTarget());
-        objective.setTerm(objectiveDTO.getTerm());
-        objective.setCreation_date(objectiveDTO.getCreationDate());
+        objective.setId(dto.getId());
+        objective.setName(dto.getName());
+        objective.setTarget(dto.getTarget());
+        objective.setTerm(dto.getTerm());
+        objective.setCreation_date(dto.getCreationDate());
         objective.setUser(user);
 
         return objective;
     }
 
-    /**
-     * Converts a list of Objective entities to a list of ObjectiveDTOs
-     *
-     * @param objectives the list of entities to convert
-     * @return the list of DTO representations
-     */
     public static List<ObjectiveDTO> toDTOList(List<Objective> objectives) {
         return objectives.stream()
                 .map(ObjectiveMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Updates an existing Objective entity with data from a DTO
-     *
-     * @param existing the existing entity to update
-     * @param objectiveDTO the DTO containing the new data
-     * @return the updated entity
-     */
-    public static Objective updateEntityFromDTO(Objective existing, ObjectiveDTO objectiveDTO) {
-        if (objectiveDTO == null) {
+    public static Objective updateEntityFromDTO(Objective existing, ObjectiveDTO dto) {
+        if (dto == null) {
             return existing;
         }
 
-        if (objectiveDTO.getName() != null) {
-            existing.setName(objectiveDTO.getName());
+        if (dto.getName() != null) {
+            existing.setName(dto.getName());
         }
-        if (objectiveDTO.getTarget() != null) {
-            existing.setTarget(objectiveDTO.getTarget());
+
+        if (dto.getTarget() != null) {
+            existing.setTarget(dto.getTarget());
         }
-        if (objectiveDTO.getTerm() != null) {
-            existing.setTerm(objectiveDTO.getTerm());
+
+        if (dto.getTerm() != null) {
+            existing.setTerm(dto.getTerm());
         }
+
+        // Normalmente não atualizamos creationDate nem usuário aqui
 
         return existing;
     }
