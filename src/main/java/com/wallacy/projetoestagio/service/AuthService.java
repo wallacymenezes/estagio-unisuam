@@ -14,7 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -32,18 +32,21 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final EmailService emailService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public AuthService(UserRepository userRepository,
                        PasswordRecoveryRepository recuperadorSenhaRepository,
                        AuthenticationManager authenticationManager,
                        JwtService jwtService,
-                       EmailService emailService) {
+                       EmailService emailService,
+                       PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.recuperadorSenhaRepository = recuperadorSenhaRepository;
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
         this.emailService = emailService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public Optional<UserDTO> authenticateUsers(LoginRequest loginRequest) {
@@ -133,8 +136,8 @@ public class AuthService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token inválido para alteração de senha");
         }
 
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        user.setPassword(encoder.encode(userDTO.getPassword()));
+
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         userRepository.save(user);
     }
 
