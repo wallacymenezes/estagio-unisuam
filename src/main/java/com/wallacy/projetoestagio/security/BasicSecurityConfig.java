@@ -62,8 +62,8 @@ public class BasicSecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/auth/logar").permitAll()
-                        .requestMatchers("/users/cadastrar").permitAll()
+                        .requestMatchers("/auth/login").permitAll()
+                        .requestMatchers("/users/register").permitAll()
                         .requestMatchers("/auth/recover-token").permitAll()
                         .requestMatchers("/auth/validate-otp").permitAll()
                         .requestMatchers("/auth/change-password").permitAll()

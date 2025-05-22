@@ -11,8 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Configuration
 public class AdminUserConfig implements CommandLineRunner {
 
-    private UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public AdminUserConfig(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
