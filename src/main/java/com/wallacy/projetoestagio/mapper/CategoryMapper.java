@@ -34,17 +34,13 @@ public class CategoryMapper {
     }
 
 
-    public static Category toEntity(CategoryDTO dto, UserRepository userRepository) {
+    public static Category toEntity(CategoryDTO dto, User user) {
         Category category = new Category();
         category.setId(dto.getId());
         category.setName(dto.getName());
         category.setDescription(dto.getDescription());
         category.setColor(dto.getColor());
-
-        if (dto.getUserId() != null) {
-            Optional<User> userOpt = userRepository.findByUserId(dto.getUserId());
-            userOpt.ifPresent(category::setUser);
-        }
+        category.setUser(user);
 
         return category;
     }

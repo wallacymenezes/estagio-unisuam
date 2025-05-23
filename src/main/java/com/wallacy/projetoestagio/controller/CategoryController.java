@@ -43,7 +43,7 @@ public class CategoryController {
         if (userOpt.isEmpty()) {
             return ResponseEntity.badRequest().build(); // ou lançar exceção com mensagem clara
         }
-        Category category = CategoryMapper.toEntity(dto, (UserRepository) userOpt.get());
+        Category category = CategoryMapper.toEntity(dto, userOpt.get());
         Category saved = categoryRepository.save(category);
         return ResponseEntity.status(201).body(CategoryMapper.toDTO(saved));
     }
