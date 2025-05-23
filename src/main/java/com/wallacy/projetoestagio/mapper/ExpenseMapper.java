@@ -25,7 +25,7 @@ public class ExpenseMapper {
                 expense.getDescription(),
                 expense.getValue(),
                 expense.getCreation_date(),
-                expense.getCategory() != null ? expense.getCategory().getName() : null,
+                expense.getCategory() != null ? expense.getCategory().getId() : null,
                 userId
         );
     }

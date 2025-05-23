@@ -11,7 +11,7 @@ public class ExpenseDTO {
     private String description;
     private BigDecimal value;
     private LocalDateTime creationDate;
-    private String category;
+    private Long category;
     private UUID userId;  // Novo campo para armazenar o id do usuário
 
     // Constructors
@@ -19,7 +19,7 @@ public class ExpenseDTO {
     public ExpenseDTO() {
     }
 
-    public ExpenseDTO(Long id, String name, String description, BigDecimal value, LocalDateTime creationDate, String category, UUID userId) {
+    public ExpenseDTO(Long id, String name, String description, BigDecimal value, LocalDateTime creationDate, Long category, UUID userId) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -71,11 +71,11 @@ public class ExpenseDTO {
         this.creationDate = creationDate;
     }
 
-    public String getCategory() {
+    public Long getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Long category) {
         this.category = category;
     }
 
