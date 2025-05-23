@@ -36,7 +36,7 @@ public class UserMapper {
             exdto.setValue(e.getValue());
             exdto.setDescription(e.getDescription());
             exdto.setCreationDate(e.getCreation_date());
-            exdto.setCategory(e.getCategory() != null ? e.getCategory().getName() : null);
+            exdto.setCategory(e.getCategory() != null ? e.getCategory().getId() : null);
             return exdto;
         }).collect(Collectors.toList()));
 
@@ -102,7 +102,7 @@ public class UserMapper {
                 expense.setCreation_date(e.getCreationDate());
                 // Aqui assumimos que a categoria virá apenas com nome
                 Category category = new Category();
-                category.setName(e.getCategory());
+                category.setId(e.getCategory());
                 expense.setCategory(category);
                 expense.setUser(user);
                 return expense;
