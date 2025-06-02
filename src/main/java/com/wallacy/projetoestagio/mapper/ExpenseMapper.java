@@ -3,6 +3,7 @@ package com.wallacy.projetoestagio.mapper;
 import com.wallacy.projetoestagio.dto.ExpenseDTO;
 import com.wallacy.projetoestagio.model.Category;
 import com.wallacy.projetoestagio.model.Expense;
+import com.wallacy.projetoestagio.enums.ExpenseStatus; // Importar o Enum
 import com.wallacy.projetoestagio.model.User;
 
 import java.util.UUID;
@@ -26,7 +27,8 @@ public class ExpenseMapper {
                 expense.getValue(),
                 expense.getCreation_date(),
                 expense.getCategory() != null ? expense.getCategory().getId() : null,
-                userId
+                userId,
+                expense.getStatus() // Inclui o status ao converter para DTO
         );
     }
 
@@ -43,6 +45,7 @@ public class ExpenseMapper {
         expense.setCreation_date(dto.getCreationDate());
         expense.setCategory(category);
         expense.setUser(user);
+        expense.setStatus(dto.getStatus() != null ? dto.getStatus() : ExpenseStatus.PENDING); // Define o status ou um padrão se for nulo
 
         return expense;
     }
@@ -56,6 +59,11 @@ public class ExpenseMapper {
         existingExpense.setDescription(dto.getDescription());
         existingExpense.setValue(dto.getValue());
         existingExpense.setCategory(category);
+
+        // Atualiza o status se for fornecido no DTO
+        if (dto.getStatus() != null) {
+            existingExpense.setStatus(dto.getStatus());
+        }
 
         // Normalmente não atualizamos o usuário aqui
 

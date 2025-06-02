@@ -1,6 +1,7 @@
 package com.wallacy.projetoestagio.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.wallacy.projetoestagio.enums.ExpenseStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -40,12 +41,18 @@ public class Expense {
     @JsonIgnoreProperties("spending_by_category")
     private Category category;
 
+    // NOVO ATRIBUTO: Status da despesa
+    @Enumerated(EnumType.STRING) // Armazena o nome do Enum como String no banco de dados
+    @Column(nullable = false)
+    private ExpenseStatus status; //
+
     // Constructors
 
     public Expense() {
+        this.status = ExpenseStatus.PENDING; // Define um status padrão ao criar uma nova despesa
     }
 
-    public Expense(Long id, String name, String description, BigDecimal value, LocalDateTime creation_date, User user, Category category) {
+    public Expense(Long id, String name, String description, BigDecimal value, LocalDateTime creation_date, User user, Category category, ExpenseStatus status) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -53,6 +60,7 @@ public class Expense {
         this.creation_date = creation_date;
         this.user = user;
         this.category = category;
+        this.status = status; //
     }
 
     // Getters e setters
@@ -112,5 +120,13 @@ public class Expense {
     public void setCategory(Category category) {
         this.category = category;
     }
-}
 
+    // NOVO GETTER E SETTER para o status
+    public ExpenseStatus getStatus() { //
+        return status;
+    }
+
+    public void setStatus(ExpenseStatus status) { //
+        this.status = status;
+    }
+}

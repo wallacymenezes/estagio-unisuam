@@ -1,5 +1,6 @@
 package com.wallacy.projetoestagio.dto;
 
+import com.wallacy.projetoestagio.enums.ExpenseStatus; // Importar o Enum
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -12,14 +13,15 @@ public class ExpenseDTO {
     private BigDecimal value;
     private LocalDateTime creationDate;
     private Long category;
-    private UUID userId;  // Novo campo para armazenar o id do usuário
+    private UUID userId;
+    private ExpenseStatus status; // NOVO CAMPO: Status da despesa
 
     // Constructors
 
     public ExpenseDTO() {
     }
 
-    public ExpenseDTO(Long id, String name, String description, BigDecimal value, LocalDateTime creationDate, Long category, UUID userId) {
+    public ExpenseDTO(Long id, String name, String description, BigDecimal value, LocalDateTime creationDate, Long category, UUID userId, ExpenseStatus status) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -27,6 +29,7 @@ public class ExpenseDTO {
         this.creationDate = creationDate;
         this.category = category;
         this.userId = userId;
+        this.status = status; //
     }
 
     // Getters and Setters
@@ -85,5 +88,14 @@ public class ExpenseDTO {
 
     public void setUserId(UUID userId) {
         this.userId = userId;
+    }
+
+    // NOVO GETTER E SETTER para o status
+    public ExpenseStatus getStatus() { //
+        return status;
+    }
+
+    public void setStatus(ExpenseStatus status) { //
+        this.status = status;
     }
 }
