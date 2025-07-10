@@ -1,5 +1,5 @@
 # Etapa 1: Construção do Backend (Spring Boot) com Java 24
-FROM openjdk:24-jdk-slim as build
+FROM openjdk:17-jdk-slim as build
 
 # Definir diretório de trabalho
 WORKDIR /workspace/app
@@ -20,7 +20,7 @@ RUN ./mvnw clean install -DskipTests
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 
 # Etapa 2: Rodar o Backend (Spring Boot)
-FROM openjdk:24-jdk-slim
+FROM openjdk:17-jdk-slim
 
 # Criar volume temporário para o Spring Boot
 VOLUME /tmp
