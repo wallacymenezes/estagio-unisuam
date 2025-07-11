@@ -15,7 +15,7 @@ public class User {
     private UUID userId;
 
     @NotEmpty(message = "The name cannot be empty")
-    @Size(min = 3, max = 50, message = "The name must be between 3 and 50 characters")
+    @Size(min = 3, max = 100, message = "The name must be between 3 and 50 characters")
     private String name;
 
     @Email(message = "Invalid email format")

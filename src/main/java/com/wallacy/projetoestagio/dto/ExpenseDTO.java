@@ -12,7 +12,7 @@ public class ExpenseDTO {
     private String description;
     private BigDecimal value;
     private LocalDateTime creationDate;
-    private Long category;
+    private Long categoryId;
     private UUID userId;
     private ExpenseStatus status; // NOVO CAMPO: Status da despesa
 
@@ -21,13 +21,13 @@ public class ExpenseDTO {
     public ExpenseDTO() {
     }
 
-    public ExpenseDTO(Long id, String name, String description, BigDecimal value, LocalDateTime creationDate, Long category, UUID userId, ExpenseStatus status) {
+    public ExpenseDTO(Long id, String name, String description, BigDecimal value, LocalDateTime creationDate, Long categoryId, UUID userId, ExpenseStatus status) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.value = value;
         this.creationDate = creationDate;
-        this.category = category;
+        this.categoryId = categoryId;
         this.userId = userId;
         this.status = status; //
     }
@@ -75,11 +75,11 @@ public class ExpenseDTO {
     }
 
     public Long getCategory() {
-        return category;
+        return categoryId;
     }
 
     public void setCategory(Long category) {
-        this.category = category;
+        this.categoryId = category;
     }
 
     public UUID getUserId() {
