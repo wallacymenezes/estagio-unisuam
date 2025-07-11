@@ -29,7 +29,7 @@ public class ExpenseDTO {
         this.creationDate = creationDate;
         this.categoryId = categoryId;
         this.userId = userId;
-        this.status = status; //
+        this.status = status;
     }
 
     // Getters and Setters
@@ -74,12 +74,12 @@ public class ExpenseDTO {
         this.creationDate = creationDate;
     }
 
-    public Long getCategory() {
+    public Long getCategoryId() {
         return categoryId;
     }
 
-    public void setCategory(Long category) {
-        this.categoryId = category;
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 
     public UUID getUserId() {

@@ -57,7 +57,7 @@ public class ExpenseController {
         if (userOpt.isEmpty()) {
             return ResponseEntity.badRequest().body("Usuário não encontrado");
         }
-        Optional<Category> categoryOpt = categoryRepository.findById(expenseDTO.getCategory());
+        Optional<Category> categoryOpt = categoryRepository.findById(expenseDTO.getCategoryId());
         if (categoryOpt.isEmpty()) {
             return ResponseEntity.badRequest().body("Categoria não encontrada");
         }
@@ -79,7 +79,7 @@ public class ExpenseController {
         if (userOpt.isEmpty()) {
             return ResponseEntity.badRequest().body("Usuário não encontrado");
         }
-        Optional<Category> categoryOpt = categoryRepository.findById(expenseDTO.getCategory());
+        Optional<Category> categoryOpt = categoryRepository.findById(expenseDTO.getCategoryId());
         if (categoryOpt.isEmpty()) {
             return ResponseEntity.badRequest().body("Categoria não encontrada");
         }

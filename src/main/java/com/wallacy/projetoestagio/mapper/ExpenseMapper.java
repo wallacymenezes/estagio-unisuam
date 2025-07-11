@@ -42,7 +42,6 @@ public class ExpenseMapper {
         expense.setName(dto.getName());
         expense.setDescription(dto.getDescription());
         expense.setValue(dto.getValue());
-        expense.setCreation_date(dto.getCreationDate());
         expense.setCategory(category);
         expense.setUser(user);
         expense.setStatus(dto.getStatus() != null ? dto.getStatus() : ExpenseStatus.PENDING); // Define o status ou um padrão se for nulo
