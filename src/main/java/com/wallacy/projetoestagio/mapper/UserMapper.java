@@ -47,7 +47,7 @@ public class UserMapper {
             idto.setDescription(inv.getDescription());
             idto.setPercentage(inv.getPercentage());
             idto.setMonths(inv.getMonths());
-            idto.setCreation_date(inv.getCreation_date());
+            idto.setCreationDate(inv.getCreation_date());
             idto.setValue(inv.getValue());
             idto.setInvestmentType(inv.getType().getLabel()); // Usando getLabel() do Enum
             return idto;
@@ -118,7 +118,7 @@ public class UserMapper {
                 inv.setDescription(i.getDescription());
                 inv.setPercentage(i.getPercentage());
                 inv.setMonths(i.getMonths());
-                inv.setCreation_date(i.getCreation_date());
+                inv.setCreation_date(i.getCreationDate());
                 inv.setValue(i.getValue());
                 inv.setType(Investment.InvestmentType.valueOf(i.getInvestmentType().toUpperCase())); // converte string para enum
                 inv.setUser(user);

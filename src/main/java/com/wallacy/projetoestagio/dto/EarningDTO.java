@@ -11,25 +11,29 @@ public class EarningDTO {
     private String description;
     private BigDecimal value;
     private boolean wage;
+    private LocalDateTime recebimento;  // Novo campo
     private LocalDateTime creationDate;
-    private UUID userId;  // Adicionado campo userId
+    private LocalDateTime lastUpdate;   // Novo campo
+    private UUID userId;
 
-    // Construtores
+    // ## CONSTRUCTORS ##
 
     public EarningDTO() {
     }
 
-    public EarningDTO(Long id, String name, String description, BigDecimal value, boolean wage, LocalDateTime creationDate, UUID userId) {
+    public EarningDTO(Long id, String name, String description, BigDecimal value, boolean wage, LocalDateTime recebimento, LocalDateTime creationDate, LocalDateTime lastUpdate, UUID userId) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.value = value;
         this.wage = wage;
+        this.recebimento = recebimento;
         this.creationDate = creationDate;
+        this.lastUpdate = lastUpdate;
         this.userId = userId;
     }
 
-    // Getters e Setters
+    // ## GETTERS E SETTERS ##
 
     public Long getId() {
         return id;
@@ -71,12 +75,28 @@ public class EarningDTO {
         this.wage = wage;
     }
 
+    public LocalDateTime getRecebimento() {
+        return recebimento;
+    }
+
+    public void setRecebimento(LocalDateTime recebimento) {
+        this.recebimento = recebimento;
+    }
+
     public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
     public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
+    }
+
+    public LocalDateTime getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(LocalDateTime lastUpdate) {
+        this.lastUpdate = lastUpdate;
     }
 
     public UUID getUserId() {

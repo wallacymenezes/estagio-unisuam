@@ -18,7 +18,7 @@ public class Category {
     @NotNull(message = "The name cannot be empty")
     private String name;
 
-    @Size(min = 1, max = 1000, message = "The description must be less than 1000 characters")
+    @Size(max = 1000, message = "The description must be less than 1000 characters")
     private String description;
 
     @Size(max = 7, message = "Color must be a valid hex code (e.g., #FFFFFF)")

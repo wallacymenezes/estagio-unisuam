@@ -5,90 +5,122 @@ import com.wallacy.projetoestagio.model.Investment;
 import com.wallacy.projetoestagio.model.Objective;
 import com.wallacy.projetoestagio.model.User;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class InvestmentMapper {
 
+    /**
+     * Converte uma entidade Investment para um InvestmentDTO.
+     * Inclui o campo last_update para uma visão completa.
+     */
     public static InvestmentDTO toDTO(Investment investment) {
         if (investment == null) {
             return null;
         }
 
+        // Supondo que InvestmentDTO foi atualizado para incluir lastUpdate
         return new InvestmentDTO(
                 investment.getId(),
                 investment.getName(),
                 investment.getDescription(),
                 investment.getPercentage(),
                 investment.getMonths(),
-                investment.getCreation_date(),  // Passa Timestamp diretamente
                 investment.getValue(),
-                investment.getObjective() != null ? investment.getObjective().getId() : null,
                 investment.getType() != null ? investment.getType().getLabel() : null,
-                investment.getUser() != null ? investment.getUser().getUserId() : null
+                investment.getObjective() != null ? investment.getObjective().getId() : null,
+                investment.getUser() != null ? investment.getUser().getUserId() : null,
+                investment.getCreation_date(),
+                investment.getLast_update() // Incluído
         );
     }
 
+    /**
+     * Converte um InvestmentDTO para a entidade Investment.
+     * Ideal para criar uma nova entidade a partir de dados da API.
+     */
     public static Investment toEntity(InvestmentDTO dto, User user, Objective objective) {
         if (dto == null) {
             return null;
         }
 
         Investment investment = new Investment();
-        investment.setId(dto.getId());
+        investment.setId(dto.getId()); // Será null para uma nova entidade
         investment.setName(dto.getName());
         investment.setDescription(dto.getDescription());
         investment.setPercentage(dto.getPercentage());
         investment.setMonths(dto.getMonths());
-        investment.setCreation_date(dto.getCreation_date());  // Timestamp direto
         investment.setValue(dto.getValue());
         investment.setUser(user);
+        investment.setObjective(objective);
 
+        // Converte a String do DTO para o Enum da entidade
         if (dto.getInvestmentType() != null) {
             try {
                 investment.setType(Investment.InvestmentType.valueOf(dto.getInvestmentType().toUpperCase()));
             } catch (IllegalArgumentException e) {
-                investment.setType(null); // ou lance exceção, conforme regra de negócio
+                // Se o tipo for inválido, define como nulo ou lança uma exceção,
+                // dependendo da sua regra de negócio.
+                investment.setType(null);
             }
-        } else {
-            investment.setType(null);
         }
 
-        investment.setObjective(objective);
+        // Não definimos creation_date e last_update aqui,
+        // pois são gerenciados automaticamente pelo Hibernate com @CreationTimestamp e @UpdateTimestamp.
 
         return investment;
     }
 
-    public static Investment updateEntityFromDTO(Investment existing, InvestmentDTO dto, Objective objective) {
-        if (dto == null) return existing;
+    /**
+     * Converte uma lista de entidades Investment para uma lista de InvestmentDTOs.
+     */
+    public static List<InvestmentDTO> toDTOList(List<Investment> investments) {
+        return investments.stream()
+                .map(InvestmentMapper::toDTO)
+                .collect(Collectors.toList());
+    }
 
+    /**
+     * Atualiza uma entidade Investment existente com dados de um InvestmentDTO.
+     * Ideal para operações de atualização (PUT/PATCH).
+     */
+    public static Investment updateEntityFromDTO(Investment existingInvestment, InvestmentDTO dto, Objective objective) {
+        if (dto == null || existingInvestment == null) {
+            return existingInvestment;
+        }
+
+        // Atualiza os campos apenas se eles forem fornecidos no DTO
         if (dto.getName() != null) {
-            existing.setName(dto.getName());
+            existingInvestment.setName(dto.getName());
         }
-
         if (dto.getDescription() != null) {
-            existing.setDescription(dto.getDescription());
+            existingInvestment.setDescription(dto.getDescription());
         }
-
-        if (dto.getPercentage() > 0) {
-            existing.setPercentage(dto.getPercentage());
+        if (dto.getPercentage() > 0) { // Considera 0 como valor a ser ignorado
+            existingInvestment.setPercentage(dto.getPercentage());
         }
-
-        if (dto.getMonths() > 0) {
-            existing.setMonths(dto.getMonths());
+        if (dto.getMonths() > 0) { // Considera 0 como valor a ser ignorado
+            existingInvestment.setMonths(dto.getMonths());
         }
-
         if (dto.getValue() != null) {
-            existing.setValue(dto.getValue());
+            existingInvestment.setValue(dto.getValue());
         }
 
+        // Atualiza o tipo se fornecido
         if (dto.getInvestmentType() != null) {
             try {
-                existing.setType(Investment.InvestmentType.valueOf(dto.getInvestmentType().toUpperCase()));
+                existingInvestment.setType(Investment.InvestmentType.valueOf(dto.getInvestmentType().toUpperCase()));
             } catch (IllegalArgumentException e) {
-                // mantém ou limpa tipo, conforme regra
+                // Não altera o tipo se o valor do DTO for inválido
             }
         }
 
-        existing.setObjective(objective); // pode ser null para desvincular
+        // Permite a atualização do objetivo
+        existingInvestment.setObjective(objective);
 
-        return existing;
+        // O usuário, data de criação e última atualização não devem ser alterados aqui.
+        // O @UpdateTimestamp cuidará de last_update automaticamente.
+
+        return existingInvestment;
     }
 }

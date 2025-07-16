@@ -25,13 +25,13 @@ public class AuthController {
     // Endpoint para solicitar o envio do otp de recuperação
     @PostMapping("/recover-token")
     public ResponseEntity<Void> createRecoverToken(@Valid @RequestBody EmailRequest emailRequest) {
-        authService.createRecoverToken(emailRequest.getEmail());
+        authService.createRecoverToken(emailRequest.email());
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/validate-otp")
-    public ResponseEntity<Optional<UserDTO>> validateOtp(@Valid @RequestBody String otp) {
-        Optional<UserDTO> userDTO = authService.validateOtpAndGenerateToken(otp);
+    public ResponseEntity<Optional<UserDTO>> validateOtp(@Valid @RequestBody CodeConfirm otp) {
+        Optional<UserDTO> userDTO = authService.validateOtpAndGenerateToken(otp.otp());
         return ResponseEntity.ok(userDTO);
     }
 

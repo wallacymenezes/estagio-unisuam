@@ -83,7 +83,7 @@ public class AuthService {
         Optional<User> userOpt = userRepository.findByEmail(email);
 
         if (userOpt.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado "+email);
         }
 
         String otp = generateOtp();

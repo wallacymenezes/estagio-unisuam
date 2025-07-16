@@ -1,7 +1,8 @@
 package com.wallacy.projetoestagio.dto;
 
-import com.wallacy.projetoestagio.enums.ExpenseStatus; // Importar o Enum
+import com.wallacy.projetoestagio.enums.ExpenseStatus;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -11,28 +12,32 @@ public class ExpenseDTO {
     private String name;
     private String description;
     private BigDecimal value;
-    private LocalDateTime creationDate;
+    private LocalDate vencimento;   // Novo campo
+    private ExpenseStatus status;
     private Long categoryId;
     private UUID userId;
-    private ExpenseStatus status; // NOVO CAMPO: Status da despesa
+    private LocalDateTime creationDate;
+    private LocalDateTime lastUpdate;   // Novo campo
 
-    // Constructors
+    // ## CONSTRUCTORS ##
 
     public ExpenseDTO() {
     }
 
-    public ExpenseDTO(Long id, String name, String description, BigDecimal value, LocalDateTime creationDate, Long categoryId, UUID userId, ExpenseStatus status) {
+    public ExpenseDTO(Long id, String name, String description, BigDecimal value, LocalDate vencimento, ExpenseStatus status, Long categoryId, UUID userId, LocalDateTime creationDate, LocalDateTime lastUpdate) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.value = value;
-        this.creationDate = creationDate;
+        this.vencimento = vencimento;
+        this.status = status;
         this.categoryId = categoryId;
         this.userId = userId;
-        this.status = status;
+        this.creationDate = creationDate;
+        this.lastUpdate = lastUpdate;
     }
 
-    // Getters and Setters
+    // ## GETTERS E SETTERS ##
 
     public Long getId() {
         return id;
@@ -66,12 +71,20 @@ public class ExpenseDTO {
         this.value = value;
     }
 
-    public LocalDateTime getCreationDate() {
-        return creationDate;
+    public LocalDate getVencimento() {
+        return vencimento;
     }
 
-    public void setCreationDate(LocalDateTime creationDate) {
-        this.creationDate = creationDate;
+    public void setVencimento(LocalDate vencimento) {
+        this.vencimento = vencimento;
+    }
+
+    public ExpenseStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ExpenseStatus status) {
+        this.status = status;
     }
 
     public Long getCategoryId() {
@@ -90,12 +103,19 @@ public class ExpenseDTO {
         this.userId = userId;
     }
 
-    // NOVO GETTER E SETTER para o status
-    public ExpenseStatus getStatus() { //
-        return status;
+    public LocalDateTime getCreationDate() {
+        return creationDate;
     }
 
-    public void setStatus(ExpenseStatus status) { //
-        this.status = status;
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public LocalDateTime getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(LocalDateTime lastUpdate) {
+        this.lastUpdate = lastUpdate;
     }
 }

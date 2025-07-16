@@ -7,8 +7,10 @@ import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tb_investments")
@@ -21,7 +23,7 @@ public class Investment {
     @NotNull(message = "The name cannot be empty")
     private String name;
 
-    @Size(min = 1, max = 1000, message = "The description must be less than 1000 characters")
+    @Size(max = 1000, message = "The description must be less than 1000 characters")
     private String description;
 
     @DecimalMin(value = "0.0", inclusive = false, message = "Value must be greater than zero")
@@ -29,8 +31,11 @@ public class Investment {
 
     private int months;
 
+    @UpdateTimestamp
+    private LocalDateTime last_update;
+
     @CreationTimestamp
-    private String creation_date;
+    private LocalDateTime creation_date;
 
     @DecimalMin(value = "0.0", inclusive = false, message = "Value must be greater than zero")
     @Digits(integer = 10, fraction = 2, message = "Invalid value. Maximum of 10 whole digits and 2 decimals.")
@@ -75,13 +80,14 @@ public class Investment {
     public Investment() {
     }
 
-    public Investment(Long id, String name, String description, double percentage, int months, String creation_date, BigDecimal value, User user, Objective objective, InvestmentType type) {
+    public Investment(Long id, String name, String description, double percentage, int months, LocalDateTime creation_date, LocalDateTime last_update, BigDecimal value, User user, Objective objective, InvestmentType type) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.percentage = percentage;
         this.months = months;
         this.creation_date = creation_date;
+        this.last_update = last_update;
         this.value = value;
         this.user = user;
         this.objective = objective;
@@ -130,11 +136,11 @@ public class Investment {
         this.months = months;
     }
 
-    public String getCreation_date() {
+    public LocalDateTime getCreation_date() {
         return creation_date;
     }
 
-    public void setCreation_date(String creation_date) {
+    public void setCreation_date(LocalDateTime creation_date) {
         this.creation_date = creation_date;
     }
 
@@ -168,5 +174,13 @@ public class Investment {
 
     public void setType(InvestmentType type) {
         this.type = type;
+    }
+
+    public LocalDateTime getLast_update() {
+        return last_update;
+    }
+
+    public void setLast_update(LocalDateTime last_update) {
+        this.last_update = last_update;
     }
 }

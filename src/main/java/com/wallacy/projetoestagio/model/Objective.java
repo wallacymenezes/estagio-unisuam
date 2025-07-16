@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -29,6 +30,9 @@ public class Objective {
     private BigDecimal target;
 
     private LocalDate term;
+
+    @UpdateTimestamp
+    private LocalDateTime last_update;
 
     @CreationTimestamp
     private LocalDateTime creation_date;

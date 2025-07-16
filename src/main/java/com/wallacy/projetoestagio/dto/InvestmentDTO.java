@@ -1,7 +1,7 @@
 package com.wallacy.projetoestagio.dto;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class InvestmentDTO {
@@ -11,29 +11,33 @@ public class InvestmentDTO {
     private String description;
     private double percentage;
     private int months;
-    private String creation_date; // trocar String por LocalDateTime
     private BigDecimal value;
-    private Long objectiveId;
     private String investmentType;
+    private Long objectiveId;
     private UUID userId;
+    private LocalDateTime creationDate; // Corrigido de String para LocalDateTime
+    private LocalDateTime lastUpdate;   // Novo campo
 
-    public InvestmentDTO() {}
+    // ## CONSTRUCTORS ##
 
-    public InvestmentDTO(Long id, String name, String description, double percentage, int months,
-                         String creation_date, BigDecimal value, Long objectiveId, String investmentType, UUID userId) {
+    public InvestmentDTO() {
+    }
+
+    public InvestmentDTO(Long id, String name, String description, double percentage, int months, BigDecimal value, String investmentType, Long objectiveId, UUID userId, LocalDateTime creationDate, LocalDateTime lastUpdate) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.percentage = percentage;
         this.months = months;
-        this.creation_date = creation_date;
         this.value = value;
-        this.objectiveId = objectiveId;
         this.investmentType = investmentType;
+        this.objectiveId = objectiveId;
         this.userId = userId;
+        this.creationDate = creationDate;
+        this.lastUpdate = lastUpdate;
     }
 
-    // Getters e Setters
+    // ## GETTERS E SETTERS ##
 
     public Long getId() {
         return id;
@@ -75,22 +79,6 @@ public class InvestmentDTO {
         this.months = months;
     }
 
-    public String getCreation_date() {
-        return creation_date;
-    }
-
-    public void setCreation_date(String creation_date) {
-        this.creation_date = creation_date;
-    }
-
-    public Long getObjectiveId() {
-        return objectiveId;
-    }
-
-    public void setObjectiveId(Long objectiveId) {
-        this.objectiveId = objectiveId;
-    }
-
     public BigDecimal getValue() {
         return value;
     }
@@ -107,11 +95,35 @@ public class InvestmentDTO {
         this.investmentType = investmentType;
     }
 
+    public Long getObjectiveId() {
+        return objectiveId;
+    }
+
+    public void setObjectiveId(Long objectiveId) {
+        this.objectiveId = objectiveId;
+    }
+
     public UUID getUserId() {
         return userId;
     }
 
     public void setUserId(UUID userId) {
         this.userId = userId;
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public LocalDateTime getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(LocalDateTime lastUpdate) {
+        this.lastUpdate = lastUpdate;
     }
 }
