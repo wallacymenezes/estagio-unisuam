@@ -2,8 +2,10 @@ package com.wallacy.projetoestagio.controller;
 
 import com.wallacy.projetoestagio.dto.ObjectiveDTO;
 import com.wallacy.projetoestagio.mapper.ObjectiveMapper;
+import com.wallacy.projetoestagio.model.Investment;
 import com.wallacy.projetoestagio.model.Objective;
 import com.wallacy.projetoestagio.model.User;
+import com.wallacy.projetoestagio.repository.InvestmentRepository;
 import com.wallacy.projetoestagio.repository.ObjectiveRepository;
 import com.wallacy.projetoestagio.repository.UserRepository;
 import jakarta.validation.Valid;
@@ -21,10 +23,12 @@ import java.util.UUID;
 public class ObjectiveController {
 
     private final ObjectiveRepository objectiveRepository;
+    private final InvestmentRepository investmentRepository;
     private final UserRepository userRepository;
 
-    public ObjectiveController(ObjectiveRepository objectiveRepository, UserRepository userRepository) {
+    public ObjectiveController(ObjectiveRepository objectiveRepository, InvestmentRepository investmentRepository, UserRepository userRepository) {
         this.objectiveRepository = objectiveRepository;
+        this.investmentRepository = investmentRepository;
         this.userRepository = userRepository;
     }
 
@@ -75,11 +79,17 @@ public class ObjectiveController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        Optional<Objective> optionalObjective = objectiveRepository.findById(id);
-        if (optionalObjective.isEmpty()) {
+        // 1. Verifica se o objetivo que queremos apagar realmente existe
+        if (!objectiveRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
+
+        // 2. Desassocia todos os investimentos em uma única e eficiente operação
+        investmentRepository.disassociateInvestmentsFromObjective(id);
+
+        // 3. Apaga o objetivo com segurança, pois não tem mais "filhos"
         objectiveRepository.deleteById(id);
+
         return ResponseEntity.noContent().build();
     }
 

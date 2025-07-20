@@ -47,12 +47,13 @@ public class Objective {
     public Objective() {
     }
 
-    public Objective(Long id, String name, BigDecimal target, LocalDate term, LocalDateTime creation_date, User user) {
+    public Objective(Long id, String name, BigDecimal target, LocalDate term, LocalDateTime creation_date, LocalDateTime last_update, User user) {
         this.id = id;
         this.name = name;
         this.target = target;
         this.term = term;
         this.creation_date = creation_date;
+        this.last_update = last_update;
         this.user = user;
     }
 
@@ -96,6 +97,14 @@ public class Objective {
 
     public void setCreation_date(LocalDateTime creation_date) {
         this.creation_date = creation_date;
+    }
+
+    public LocalDateTime getLast_update() {
+        return last_update;
+    }
+
+    public void setLast_update(LocalDateTime last_update) {
+        this.last_update = last_update;
     }
 
     public User getUser() {
