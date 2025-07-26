@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -29,7 +30,7 @@ public class Earning {
     @Size(max = 1000, message = "The description must be less than 1000 characters")
     private String description;
 
-    private LocalDateTime recebimento;
+    private LocalDate recebimento;
 
     private boolean wage;
 
@@ -48,7 +49,7 @@ public class Earning {
     public Earning() {
     }
 
-    public Earning(Long id, String name, BigDecimal value, String description, LocalDateTime recebimento, boolean wage, User user, LocalDateTime creation_date, LocalDateTime last_update) {
+    public Earning(Long id, String name, BigDecimal value, String description, LocalDate recebimento, boolean wage, User user, LocalDateTime creation_date, LocalDateTime last_update) {
         this.id = id;
         this.name = name;
         this.value = value;
@@ -77,7 +78,7 @@ public class Earning {
         return description;
     }
 
-    public LocalDateTime getRecebimento() {
+    public LocalDate getRecebimento() {
         return recebimento;
     }
 
@@ -114,7 +115,7 @@ public class Earning {
         this.description = description;
     }
 
-    public void setRecebimento(LocalDateTime recebimento) {
+    public void setRecebimento(LocalDate recebimento) {
         this.recebimento = recebimento;
     }
 

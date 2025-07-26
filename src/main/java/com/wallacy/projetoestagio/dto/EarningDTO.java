@@ -1,6 +1,7 @@
 package com.wallacy.projetoestagio.dto;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -11,7 +12,7 @@ public class EarningDTO {
     private String description;
     private BigDecimal value;
     private boolean wage;
-    private LocalDateTime recebimento;  // Novo campo
+    private LocalDate recebimento;  // Novo campo
     private LocalDateTime creationDate;
     private LocalDateTime lastUpdate;   // Novo campo
     private UUID userId;
@@ -21,7 +22,7 @@ public class EarningDTO {
     public EarningDTO() {
     }
 
-    public EarningDTO(Long id, String name, String description, BigDecimal value, boolean wage, LocalDateTime recebimento, LocalDateTime creationDate, LocalDateTime lastUpdate, UUID userId) {
+    public EarningDTO(Long id, String name, String description, BigDecimal value, boolean wage, LocalDate recebimento, LocalDateTime creationDate, LocalDateTime lastUpdate, UUID userId) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -75,11 +76,11 @@ public class EarningDTO {
         this.wage = wage;
     }
 
-    public LocalDateTime getRecebimento() {
+    public LocalDate getRecebimento() {
         return recebimento;
     }
 
-    public void setRecebimento(LocalDateTime recebimento) {
+    public void setRecebimento(LocalDate recebimento) {
         this.recebimento = recebimento;
     }
 
